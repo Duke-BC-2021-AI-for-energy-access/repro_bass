@@ -1,7 +1,7 @@
-jaden_repro_bass/yolov3/weights
-jaden/repro_bass/yolov3/runs
+yolov3/weights
+yolov3/runs
 **/*.jpg
-jaden_repro_bass/domain_experiment
-jaden_repro_bass/domain_txt_files
-jaden_repro_bass/domain_txt_files2
-jaden_repro_bass/MW_txt_files
+domain_experiment
+domain_txt_files
+domain_txt_files2
+MW_txt_files
