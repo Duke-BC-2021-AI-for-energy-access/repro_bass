@@ -3,13 +3,16 @@ import os
 import subprocess
 import itertools
 import argparse
+import pwd
+
+repo_path = os.path.expanduser(f"~{pwd.getpwuid(os.geteuid())[0]}/") + 'repro_bass/'
 
 parser = argparse.ArgumentParser()
 
 parser.add_argument('--out_path', default='/home/sj305/MW_batch_size_8/')
-parser.add_argument('--train_path', default='/home/sj305/jaden_repro_bass/MW_txt_files/')
-parser.add_argument('--val_path', default='/home/sj305/jaden_repro_bass/domain_experiment/BC_team_domain_experiment/')
-parser.add_argument('--epochs', default='300')
+parser.add_argument('--train_path', default='../MW_txt_files/')
+parser.add_argument('--val_path', default='../domain_experiment/BC_team_domain_experiment/')
+parser.add_argument('--epochs', default='1')
 parser.add_argument('--device', default='0')
 args = parser.parse_args()
 
