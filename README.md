@@ -11,6 +11,7 @@ Tasks:
 # Organization of `/scratch/public`
 
 *a copy of the message from Jaden Long sent in #student_announcements*
+```
 My group discussed a solid way to reorganize the /scratch/public folder. The main reasoning is so that we can finally use GitHub to organize our scripts, and each team member can keep their own copy of the git repository that synchronizes through Github. Let me know how you like it:
 folders under /scratch/public (each user's git folder not shown here):
 ├── images - the folder for putting all the images and labels. Everyone will have read and write access to every part of it.
@@ -26,3 +27,4 @@ folders under /scratch/public (each user's git folder not shown here):
 under each team member's home directory:
 └── repro_bass - synchronized through GitHub
 After we organize the folder like this, when we write scripts, we can all share the same file paths, and no one would have to make finicky changes for their own directory. This would permit us to share the same code through github. If there a user writes a script that requires to use its current directory, we can either achieve this through calling __file__ in Python, or creating another folder under that user's copy of the repro_bass folder that gets ignored by git through .gitignore.
+```
