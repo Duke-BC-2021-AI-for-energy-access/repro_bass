@@ -9,7 +9,7 @@ repo_path = os.path.expanduser(f"~{pwd.getpwuid(os.geteuid())[0]}/") + 'repro_ba
 
 parser = argparse.ArgumentParser()
 
-parser.add_argument('--out_path', default='/home/sj305/MW_batch_size_8/')
+parser.add_argument('--out_path', default=os.path.expanduser(f"~{pwd.getpwuid(os.geteuid())[0]}/")+'MW_batch_size_8/')
 parser.add_argument('--train_path', default='../MW_txt_files/')
 parser.add_argument('--val_path', default='../domain_experiment/BC_team_domain_experiment/')
 parser.add_argument('--epochs', default='1')
