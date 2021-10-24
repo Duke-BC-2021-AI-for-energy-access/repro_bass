@@ -4,6 +4,8 @@ A repository for the Bass Connections 2021-2022 team on using AI to improve ener
 
 # Tasks
 
+[Reorganization tasks](https://docs.google.com/document/d/1nz_8KgZ67tHIYThxB4SnqBi43qTSxwanSBCCPWtvC1I/edit)
+
 Tasks: 
 - [ ] make a mark for all the scripts that people would explicitly call on and add documentation to each of them
 - [ ] organize the /scratch/public folder such that it looks like what jaden sent in student_announcements and set the directory for all the scripts to the /scratch/public
