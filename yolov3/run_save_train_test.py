@@ -35,7 +35,7 @@ def make_data_file(out_root, img_list, lbl_list, version, img_list_val, lbl_list
         f.write('valid_label=' + lbl_list_val + '\n')
         # SWITCH
         # f.write('names=/hdd/dataplus2021/whtest/repro_bass_300/yolov3/data/wnd.names\n')
-        f.write('names=/home/sj305/jaden_repro_bass/yolov3/data/wnd.names\n')
+        f.write('names=./data/wnd.names\n')
         
         f.write('backup=backup/\n')
         f.write('eval=wnd')
@@ -43,7 +43,7 @@ def make_data_file(out_root, img_list, lbl_list, version, img_list_val, lbl_list
 
 def run_train(out_root, epochs, device):
     subprocess.run(['python', 'train.py',                                                    # train gp_gan
-                    '--cfg', '/home/sj305/jaden_repro_bass/yolov3/cfg/yolov3-spp.cfg',
+                    '--cfg', './cfg/yolov3-spp.cfg',
                     '--data', out_root + 'train_data_' + version + '.data',
                     '--img-size', '608',
                     '--epochs', epochs,
@@ -54,7 +54,7 @@ def run_train(out_root, epochs, device):
 
 def run_test(out_root, device):
     subprocess.run(['python', 'test.py',                                                    # test gp_gan
-                    '--cfg', '/home/sj305/jaden_repro_bass/yolov3/cfg/yolov3-spp.cfg',
+                    '--cfg', './cfg/yolov3-spp.cfg',
                     '--data', out_root + 'train_data_' + version + '.data',
                     '--img-size', '608',
                     '--weights', 'weights/last.pt',
@@ -72,7 +72,7 @@ def copy_outputs(out_root, version):
         # shutil.copy2('/hdd/dataplus2021/whtest/repro_bass_300/yolov3/' + file, out_root + version + '_outputs/')
 
         #COPY FILE I CREATE
-        shutil.copy2('/home/sj305/jaden_repro_bass/yolov3/' + file, out_root + version + '_outputs/')
+        shutil.copy2('./' + file, out_root + version + '_outputs/')
 
 
 img_list = opt.img_list
