@@ -6,7 +6,6 @@ files_arr = open("MW_annotate.txt", "r").read().split("\n")
 
 train_dir = "/scratch/public/MW_images/0m_train_cropped/"
 test_dir = "/scratch/public/MW_images/0m_test_cropped/"
-
 results_dir = "/home/fcw/scripts/MW_annotate/"
 
 if not os.path.exists(results_dir):
