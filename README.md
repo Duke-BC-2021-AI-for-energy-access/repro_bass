@@ -9,6 +9,7 @@ A repository for the Bass Connections 2021-2022 team on using AI to improve ener
 Tasks: 
 - [ ] make a mark for all the scripts that people would explicitly call on and add documentation to each of them
 - [ ] organize the /scratch/public folder such that it looks like what jaden sent in student_announcements and set the directory for all the scripts to the /scratch/public
+- [ ] create a "best practices" guide to how to run experiments. most likely somee video guides. This can be done by the end of the year.
 
 # Organization of `/scratch/public`
 
