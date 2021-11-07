@@ -43,9 +43,14 @@ def create_boxes(my_txt_dir, my_img_dir, results_dir):
     os.mkdir(results_dir)
 
   #my_imgs = glob.glob(my_img_dir + "*.jpg")
+
+
   my_txts = glob.glob(my_txt_dir + "*.txt")
 
   my_imgs = [my_img_dir + x[len(my_txt_dir):].replace(".txt", ".jpg") for x in my_txts]
+
+  #my_txts = ["/scratch/dataplus2021/data/labels/naip_2656_IA_WND_i1j1.txt", "/scratch/dataplus2021/data/labels/naip_2656_IA_WND_i0j1.txt", "/scratch/dataplus2021/data/labels/naip_1203_CA_WND_i0j0.txt"]
+  #my_imgs = [x.replace("labels", "images").replace(".txt", ".jpg") for x in my_txts]
 
   my_imgs.sort()
   my_txts.sort()
