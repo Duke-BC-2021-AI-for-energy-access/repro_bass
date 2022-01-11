@@ -11,6 +11,7 @@ def plot_histogram(arr, title, output_directory, fig_num, bins):
     plt.figure(fig_num)
     fig = plt.hist(arr, bins=bins)
     plt.title('{title} Distribution in Real Images: Mean: {u} SD: {sd}'.format(title=title,u=round(mean(arr),3),sd=round(stdev(arr),3)))
+    #plt.xlim(xmin=0, xmax = 10)
     plt.xlabel(title)
     plt.ylabel("Frequency")
     plt.savefig("{output_dir}{title}_distribution.png".format(output_dir=output_directory,title=title))

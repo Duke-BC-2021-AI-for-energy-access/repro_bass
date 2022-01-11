@@ -1,12 +1,12 @@
 import glob
 import cv2
 
-my_dir = "/hdd/dataplus2021/fcw/ImageAugment4/results9"
+my_dir = "/hdd/dataplus2021/fcw/ImageAugment4/results9/"
 res_dir = "/hdd/dataplus2021/fcw/MaskTester/results/"
 
 
 def test_all_masks(my_dir, res_dir):
-    img_files = glob.glob(my_dir + "/*.jpg")
+    img_files = glob.glob(my_dir + "*.jpg")
     mask_files = [x.replace(".jpg", "__mask2.png") for x in img_files]
 
     if not os.path.exists(res_dir):

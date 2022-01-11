@@ -18,7 +18,7 @@ def update(home_repro):
 
     #Change YOLO scripts
     all_files.append(home_repro + "yolov3/efficient_run_train_test.py")
-    all_files.append(home_repro + yolov3/run_save_train_test.py")
+    all_files.append(home_repro + "yolov3/run_save_train_test.py")
 
     #Change MW train img and lbl files
     MW_txt_directory = home_repro + "MW_txt_files/"
