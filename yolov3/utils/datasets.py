@@ -269,7 +269,10 @@ class LoadImagesAndLabels(Dataset):  # for training/testing
                 f = glob.iglob(path + os.sep + '*.*')
             else:
                 raise Exception('%s does not exist' % path)
+            #Image file
             self.img_files = [x.replace('/', os.sep) for x in f if os.path.splitext(x)[-1].lower() in img_formats]
+            #Label file
+            #self.label_files = [x.replace('/', os.sep) for x in f if os.path.splitext(x)[-1].lower() == ".txt"]
         except:
             raise Exception('Error loading data from %s. See %s' % (path, help_url))
 
