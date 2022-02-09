@@ -13,10 +13,10 @@ def multiple_replace(dict, text):
 
 reg_dict = {
         ".jpg": ".txt",
-        "/output": "/labels"
+        "/images": "/labels"
 }
 
-cycle_dir = "/scratch/public/cyclegan-output/output/"
+cycle_dir = "/scratch/public/cyclegan-output/images/"
 
 labels_dir = "/scratch/public/domain_experiment/BC_team_domain_experiment/data/labels/"
 
@@ -24,7 +24,7 @@ all_labels = glob.glob(labels_dir+ "*.txt")
 
 for root, subdirectories, files in os.walk(cycle_dir):
     for subdirectory in subdirectories:
-        output_dir = os.path.join(root, subdirectory).replace("/output", "/labels") + "/"
+        output_dir = os.path.join(root, subdirectory).replace("/images", "/labels") + "/"
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
 

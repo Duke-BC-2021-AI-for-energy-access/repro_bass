@@ -12,8 +12,8 @@ parser = argparse.ArgumentParser()
 #out_path- /scratch/public/results/25background_experiment/
 parser.add_argument('--out_path', default=os.path.expanduser(f"~{pwd.getpwuid(os.geteuid())[0]}/")+'MW_batch_size_8/')
 #train_path- /scratch/public/txt_files/25background_experiment/
-parser.add_argument('--train_path', default='../MW_txt_files/')
-parser.add_argument('--val_path', default='../domain_experiment/BC_team_domain_experiment/')
+parser.add_argument('--train_path', default='/scratch/public/txt_files/cyclegan_txt_files/')
+parser.add_argument('--val_path', default='/scratch/public/domain_experiment/BC_team_domain_experiment/')
 parser.add_argument('--epochs', default='300')
 parser.add_argument('--device', default='0')
 args = parser.parse_args()
@@ -22,7 +22,7 @@ out_path = args.out_path
 train_path = args.train_path
 val_path = args.val_path
 
-domains = ["EM", "NE", "NW", "SW", "MW"]
+domains = ["EM", "NE", "NW", "SW"]
 
 combinations = list(itertools.product(domains, repeat=2))
 
@@ -32,11 +32,16 @@ combinations = list(itertools.product(domains, repeat=2))
     #element tuple of (train, val)
 #    return "MW" in element[0] and "MW" not in element[1]
 
+def containsDuplicate(element):
+  return element[0] != element[1]
+
 #Gets combinations with MW in it
 #MW_combos = list(filter(containsMW, combinations))
 
+reg_combos = list(filter(containsDuplicate, combinations))
+
 datasets = []
-for combo in combinations:
+for combo in reg_combos:
   for i in range(0,4):
     dataset_string = """Dataset(img_txt=train_path+'train_{src}_val_{dst}_imgs.txt',
                       lbl_txt=train_path+'train_{src}_val_{dst}_lbls.txt',

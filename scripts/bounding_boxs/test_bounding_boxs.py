@@ -5,17 +5,43 @@ import os
 import re
 
 def plot_one_box(x_ctrs, y_ctrs, widths, heights, img, fname, color=None, label=None, line_thickness=None):
-    for i in range(len(x_ctrs)):
-      x = [x_ctrs[i]-widths[i],y_ctrs[i]-heights[i],x_ctrs[i]+widths[i],y_ctrs[i]+heights[i]]
-      # Plots one bounding box on image img
-      tl = line_thickness or round(0.002 * (img.shape[0] + img.shape[1]) / 2) + 1  # line/font thickness
-      color = color or [random.randint(0, 255) for _ in range(3)]
-      c1, c2 = (int(x[0]), int(x[1])), (int(x[2]), int(x[3]))
-      cv2.rectangle(img, c1, c2, color, thickness=tl, lineType=cv2.LINE_AA)
-    #Save file
-    cv2.imwrite(fname, img)
+  """
+  Plots boxes in one image
+
+  Args:
+      x_ctrs ([type]): Holds x centerpoints of YOLO bounding boxes in image
+      y_ctrs ([type]): Holds y centerpoints of YOLO bounding boxes in image
+      widths ([type]): Holds widths of YOLO bounding boxes in image
+      heights ([type]): Holds heights of YOLO bounding boxes in image
+      img ([type]): Holds image to add bounding boxes to
+      fname ([type]): File name for output image
+      color ([type], optional): [description]. Defaults to None.
+      label ([type], optional): [description]. Defaults to None.
+      line_thickness ([type], optional): [description]. Defaults to None.
+  """
+  for i in range(len(x_ctrs)):
+    x = [x_ctrs[i]-widths[i],y_ctrs[i]-heights[i],x_ctrs[i]+widths[i],y_ctrs[i]+heights[i]]
+    # Plots one bounding box on image img
+    tl = line_thickness or round(0.002 * (img.shape[0] + img.shape[1]) / 2) + 1  # line/font thickness
+    color = color or [random.randint(0, 255) for _ in range(3)]
+    c1, c2 = (int(x[0]), int(x[1])), (int(x[2]), int(x[3]))
+    cv2.rectangle(img, c1, c2, color, thickness=tl, lineType=cv2.LINE_AA)
+  #Save file
+  cv2.imwrite(fname, img)
 
 def multiple_replace(dict, text):
+  """
+  Applies multiple replaces in string based on dictionary
+
+  Args:
+      dict ([type]): Dictionary with keys as phrase to be replaced, vals as phrase to replace key
+      text ([type]): Text to apply string replaces to
+
+  Returns:
+      [type]: [description]
+  """
+
+
   # Create a regular expression  from the dictionary keys
   regex = re.compile("(%s)" % "|".join(map(re.escape, dict.keys())))
 
@@ -38,6 +64,18 @@ def multiple_replace(dict, text):
 #results_dir = "/scratch/public/scripts/bbox_test2/"
 
 def create_boxes(my_txt_dir, my_img_dir, results_dir):
+  """
+
+  1) Grabs all images and loops over them
+  2) Extracts x center, y center, width, height for bounding boxes in each image
+  3) Uses this information to call plot_one_box with arguments to plot bounding boxes
+  for an image
+
+  Args:
+      my_txt_dir ([type]): Directory holding label files for images (YOLO formatting)
+      my_img_dir ([type]): Directory holding image files
+      results_dir ([type]): Directory to output images with bounding boxes on them
+  """
 
   if not os.path.exists(results_dir):
     os.mkdir(results_dir)
