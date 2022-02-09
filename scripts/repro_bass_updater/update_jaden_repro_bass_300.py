@@ -6,6 +6,16 @@ import re
 #Ensure val files as those are only ones to change (improve efficiency)
 
 def update(home_repro):
+    """
+    Updates repro bass folder to have file names that correspond to home directory,
+    overcomes image reading permission errors
+
+    Args:
+        home_repro ([type]): Repo to change file names to be in respect to
+
+    Returns:
+        [type]: [description]
+    """
 
     reg_dict = {
         "/scratch/public/jaden_repro_bass/": home_repro

@@ -2,6 +2,16 @@ import glob
 import os
 
 def retrieve(directory, version, output_dir, output_fname):
+    """
+    Retrieves mAP information from a directory holding many YOLO trial outputs
+    Extracts from file test_results.txt, can be adapted to extract mP, mA, mF1 
+
+    Args:
+        directory ([type]): YOLO results holding various trials (to find stats)
+        version ([type]): Version specified in run save train test py
+        output_dir ([type]): Directory to output csv to
+        output_fname ([type]): Filename for output csv
+    """
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
         print(output_dir + " directory was made")

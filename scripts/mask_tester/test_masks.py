@@ -6,6 +6,15 @@ res_dir = "/hdd/dataplus2021/fcw/MaskTester/results/"
 
 
 def test_all_masks(my_dir, res_dir):
+    """
+
+    Uses bitwise and to display how well a mask matches an image (shows the white part of binary mask) 
+    as it corresponds to source image
+
+    Args:
+        my_dir ([type]): Directory holding images and mask files from Image Augmentation
+        res_dir ([type]): Directory to output resulting images to
+    """
     img_files = glob.glob(my_dir + "*.jpg")
     mask_files = [x.replace(".jpg", "__mask2.png") for x in img_files]
 
