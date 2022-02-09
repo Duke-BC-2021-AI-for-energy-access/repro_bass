@@ -10,6 +10,21 @@ def containsNewDomain(domain, element):
     return domain in element
 
 def readDomains(domains, txt_files_dir, directory=None):
+    """
+
+    Outputs dictionary for real images, real labels, supplementary images, supplementary labels
+        where key is domain, value holds a list of the images/labels
+
+    Args:
+        domains ([type]): List of domains to read through
+        txt_files_dir ([type]): Directory holding label files for within domain exeriments
+        directory ([type], optional): Directory holding supplementary (often synthetic) images, 
+            if None will sample 75 image for it
+
+    Returns:
+        [type]: [description]
+    """
+
     real_imgs = dict()
     real_lbls = dict()
     synth_imgs = dict()
@@ -33,6 +48,20 @@ def readDomains(domains, txt_files_dir, directory=None):
     return real_imgs, real_lbls, synth_imgs, synth_lbls
 
 def readVals(domains, val_dir):
+    """
+
+    Unnecessary due to readDomains
+    Outputs dictionary for val images, val labels
+        where key is domain, value holds a list of the images/labels
+
+
+    Args:
+        domains ([type]): [description]
+        val_dir ([type]): [description]
+
+    Returns:
+        [type]: [description]
+    """
     val_imgs = dict()
     val_lbls = dict()
     img_fname = "val_img_paths.txt"
@@ -50,6 +79,16 @@ def readVals(domains, val_dir):
     return val_imgs, val_lbls
 
 def multiple_replace(dict, text):
+  """
+  Applies multiple replaces in string based on dictionary
+
+  Args:
+      dict ([type]): Dictionary with keys as phrase to be replaced, vals as phrase to replace key
+      text ([type]): Text to apply string replaces to
+
+  Returns:
+      [type]: [description]
+  """
   # Create a regular expression  from the dictionary keys
   regex = re.compile("(%s)" % "|".join(map(re.escape, dict.keys())))
 
@@ -57,6 +96,16 @@ def multiple_replace(dict, text):
   return regex.sub(lambda mo: dict[mo.string[mo.start():mo.end()]], text) 
 
 def sampleSupplementary(directory, n, domain,synth_imgs,synth_lbls, replacer):
+    """[summary]
+
+    Args:
+        directory ([type]): Directory holding all synthetic images (assumed to hold all domains synthetic subfolders)
+        n ([type]): Number of images to sample
+        domain ([type]): Domain to sample supplementary for 
+        synth_imgs ([type]): Dictionary holding domains as keys, list of synthetic images for domain as val
+        synth_lbls ([type]): Dictionary holding domains as keys, list of synthetic labels for domain as val
+        replacer ([type]): Dictionary used for string replacements for labels (images to labels, jpg to txt)
+    """
     all_synth_imgs = glob.glob(directory + "/**/*.jpg", recursive = True)
     #SAMPLES WITHOUT REPLACEMENT
     synth_sample_imgs = random.sample(all_synth_imgs, n)
