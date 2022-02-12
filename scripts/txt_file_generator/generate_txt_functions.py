@@ -56,8 +56,8 @@ def readVals(domains, val_dir):
 
 
     Args:
-        domains ([type]): [description]
-        val_dir ([type]): [description]
+        domains ([type]):  List of domains to read through, get val for 
+        val_dir ([type]): Directory holding val images
 
     Returns:
         [type]: [description]
