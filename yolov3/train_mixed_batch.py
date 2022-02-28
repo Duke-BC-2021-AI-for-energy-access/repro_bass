@@ -22,6 +22,22 @@ last = wdir + 'last.pt'
 best = wdir + 'best.pt'
 results_file = 'results.txt'
 
+###added for mb###
+def infi_loop(dl):
+    while True:
+        for (imgs, targets, paths, _) in dl:
+            yield imgs, targets, paths
+
+#Differences
+#obj: 49.5
+#weight_decay: 0.000484
+
+#fl_gamma: 0.0
+#degrees: 1.98,  # image rotation (+/- deg)
+#translate: 0.05,  # image translation (+/- fraction)
+#scale: 0.05,  # image scale (+/- gain)
+#shear: 0.641, # image shear (+/- deg)
+
 # Hyperparameters
 hyp = {'giou': 3.54,  # giou loss gain
        'cls': 37.4,  # cls loss gain
@@ -55,13 +71,21 @@ if hyp['fl_gamma']:
 
 
 def train(hyp):
+    torch.cuda.empty_cache()
     cfg = opt.cfg
     data = opt.data
     epochs = opt.epochs  # 500200 batches at bs 64, 117263 images = 273 epochs
-    batch_size = opt.batch_size
     accumulate = max(round(64 / batch_size), 1)  # accumulate n times before optimizer update (bs 64)
     weights = opt.weights  # initial training weights
     imgsz_min, imgsz_max, imgsz_test = opt.img_size  # img sizes (min, max, test)
+
+    batch_size = opt.batch_size
+
+    ###added for mb###
+    supplement_batch_size = opt.supplement_batch_size
+    ########What is accumulate? (ratio of real to synthetic?)##############
+
+    accumulate = opt.accumulate  # effective bs = batch_size * accumulate = 16 * 4 = 64
 
     # Image Sizes
     gs = 32  # (pixels) grid size
@@ -79,9 +103,15 @@ def train(hyp):
     init_seeds()
     data_dict = parse_data_cfg(data)
     train_path = data_dict['train']
+
+    ###added for mb###
+    synth_path = data_dict['supplement']
     test_path = data_dict['valid']
     nc = 1 if opt.single_cls else int(data_dict['classes'])  # number of classes
     hyp['cls'] *= nc / 80  # update coco-tuned hyp['cls'] to current dataset
+
+    ###added for mb###
+    loop_count = int(image_number) // batch_size
 
     # Remove previous results
     for f in glob.glob('*_batch*.jpg') + glob.glob(results_file):
@@ -197,6 +227,15 @@ def train(hyp):
                                   cache_images=opt.cache_images,
                                   single_cls=opt.single_cls)
 
+    ###added for mb####
+    synth_dataset = LoadImagesAndLabels(synth_path, img_size, batch_size,
+                                    augment=True,
+                                    hyp=hyp, 
+                                    rect=False, 
+                                    cache_labels=True, 
+                                    cache_images=opt.cache_images,
+                                    single_cls=opt.single_cls)
+
     # Dataloader
     batch_size = min(batch_size, len(dataset))
     nw = min([os.cpu_count(), batch_size if batch_size > 1 else 0, 8])  # number of workers
@@ -206,6 +245,14 @@ def train(hyp):
                                              shuffle=not opt.rect,  # Shuffle=True unless rectangular training is used
                                              pin_memory=True,
                                              collate_fn=dataset.collate_fn)
+
+    ###added for mb###
+    synth_dataloader = torch.utils.data.DataLoader(synth_dataset,
+                                                batch_size=supplement_batch_size,
+                                                num_workers=nw, 
+                                                shuffle=True, 
+                                                pin_memory=True, 
+                                                collate_fn=coco_dataset.collate_fn)
 
     # Testloader
     testloader = torch.utils.data.DataLoader(LoadImagesAndLabels(test_path, imgsz_test, batch_size,
@@ -223,6 +270,9 @@ def train(hyp):
     model.hyp = hyp  # attach hyperparameters to model
     model.gr = 1.0  # giou loss ratio (obj_loss = 1.0 or giou)
     model.class_weights = labels_to_class_weights(dataset.labels, nc).to(device)  # attach class weights
+    
+    #model.arc = opt.arc  # attach yolo architecture
+
 
     # Model EMA
     ema = torch_utils.ModelEMA(model)
@@ -248,9 +298,33 @@ def train(hyp):
 
         mloss = torch.zeros(4).to(device)  # mean losses
         print(('\n' + '%10s' * 8) % ('Epoch', 'gpu_mem', 'GIoU', 'obj', 'cls', 'total', 'targets', 'img_size'))
+        
+        ###added for mb####
+        if dataloader:
+            gen_ir_data = infi_loop(dataloader)
+        if synth_dataloader:
+            gen_synth_data = infi_loop(coco_dataloader)
+        
+        
         pbar = tqdm(enumerate(dataloader), total=nb)  # progress bar
-        for i, (imgs, targets, paths, _) in pbar:  # batch -------------------------------------------------------------
+
+        #, (imgs, targets, paths, _) 
+        for i in pbar:  # batch -------------------------------------------------------------
+            if gen_ir_data and gen_synth_data:
+                imgs_ir, targets_ir, paths_ir = next(gen_ir_data)
+                imgs_synth, targets_synth, paths_synth = next(gen_synth_data)
+                mixed_batch_size = batch_size - supplement_batch_size
+
+                for si in reversed(range(mixed_batch_size)):
+                    targets_ir[targets_ir[:,0] == si, 0] = supplement_batch_size + si
+
+                imgs = torch.cat([imgs_synth, imgs_ir], dim=0)
+                targets = torch.cat([targets_synth, targets_ir],dim=0)
+                paths = paths_synth + paths_ir
+
+
             ni = i + nb * epoch  # number integrated batches (since train start)
+            
             imgs = imgs.to(device).float() / 255.0  # uint8 to float32, 0 - 255 to 0.0 - 1.0
             targets = targets.to(device)
 
@@ -306,7 +380,7 @@ def train(hyp):
 
             # Plot
             if ni < 1:
-                f = 'train_batch%g.jpg' % i  # filename
+                f = 'train_mixedbatch%g.jpg' % i  # filename
                 res = plot_images(images=imgs, targets=targets, paths=paths, fname=f)
                 if tb_writer:
                     tb_writer.add_image(f, res, dataformats='HWC', global_step=epoch)
@@ -393,6 +467,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--epochs', type=int, default=300)  # 500200 batches at bs 16, 117263 COCO images = 273 epochs
     parser.add_argument('--batch-size', type=int, default=16)  # effective bs = batch_size * accumulate = 16 * 4 = 64
+    parser.add_argument('--supplement-batch-size', type=int, default=1)  #number of images in a batch that come from supplementary dataset
     parser.add_argument('--cfg', type=str, default='cfg/yolov3-spp.cfg', help='*.cfg path')
     parser.add_argument('--data', type=str, default='data/coco2017.data', help='*.data path')
     parser.add_argument('--multi-scale', action='store_true', help='adjust (67%% - 150%%) img_size every 10 batches')
