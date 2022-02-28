@@ -8,6 +8,15 @@ lbl_directory = "/scratch/dataplus2021/data/labels/"
 output_directory = "/scratch/public/distributions/"
 
 def plot_histogram(arr, title, output_directory, fig_num, bins):
+    """[summary]
+
+    Args:
+        arr ([type]): [description]
+        title ([type]): [description]
+        output_directory ([type]): [description]
+        fig_num ([type]): [description]
+        bins ([type]): [description]
+    """
     plt.figure(fig_num)
     fig = plt.hist(arr, bins=bins)
     plt.title('{title} Distribution in Real Images: Mean: {u} SD: {sd}'.format(title=title,u=round(mean(arr),3),sd=round(stdev(arr),3)))
@@ -17,6 +26,12 @@ def plot_histogram(arr, title, output_directory, fig_num, bins):
     plt.savefig("{output_dir}{title}_distribution.png".format(output_dir=output_directory,title=title))
 
 def run_distributions(lbl_directory, output_directory):
+    """[summary]
+
+    Args:
+        lbl_directory ([type]): [description]
+        output_directory ([type]): [description]
+    """
     if not os.path.exists(output_directory):
         os.makedirs(output_directory)
 

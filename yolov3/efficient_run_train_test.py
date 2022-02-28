@@ -42,6 +42,7 @@ reg_combos = list(filter(containsDuplicate, combinations))
 
 datasets = []
 for combo in reg_combos:
+  print(combo)
   for i in range(0,4):
     dataset_string = """Dataset(img_txt=train_path+'train_{src}_val_{dst}_imgs.txt',
                       lbl_txt=train_path+'train_{src}_val_{dst}_lbls.txt',
