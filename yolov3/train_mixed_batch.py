@@ -74,18 +74,18 @@ def train(hyp):
     torch.cuda.empty_cache()
     cfg = opt.cfg
     data = opt.data
+    batch_size = int(opt.batch_size)
     epochs = opt.epochs  # 500200 batches at bs 64, 117263 images = 273 epochs
     accumulate = max(round(64 / batch_size), 1)  # accumulate n times before optimizer update (bs 64)
     weights = opt.weights  # initial training weights
     imgsz_min, imgsz_max, imgsz_test = opt.img_size  # img sizes (min, max, test)
 
-    batch_size = opt.batch_size
 
     ###added for mb###
-    supplement_batch_size = opt.supplement_batch_size
+    supplement_batch_size = int(opt.supplement_batch_size)
     ########What is accumulate? (ratio of real to synthetic?)##############
 
-    accumulate = opt.accumulate  # effective bs = batch_size * accumulate = 16 * 4 = 64
+    #accumulate = opt.accumulate  # effective bs = batch_size * accumulate = 16 * 4 = 64
 
     # Image Sizes
     gs = 32  # (pixels) grid size
@@ -466,7 +466,7 @@ def train(hyp):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--epochs', type=int, default=300)  # 500200 batches at bs 16, 117263 COCO images = 273 epochs
-    parser.add_argument('--batch-size', type=int, default=16)  # effective bs = batch_size * accumulate = 16 * 4 = 64
+    parser.add_argument('--batch-size', type=int, default=8)  # effective bs = batch_size * accumulate = 16 * 4 = 64
     parser.add_argument('--supplement-batch-size', type=int, default=1)  #number of images in a batch that come from supplementary dataset
     parser.add_argument('--cfg', type=str, default='cfg/yolov3-spp.cfg', help='*.cfg path')
     parser.add_argument('--data', type=str, default='data/coco2017.data', help='*.data path')

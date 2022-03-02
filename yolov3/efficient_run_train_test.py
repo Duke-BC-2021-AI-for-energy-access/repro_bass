@@ -9,11 +9,13 @@ repo_path = os.path.expanduser(f"~{pwd.getpwuid(os.geteuid())[0]}/") + 'repro_ba
 
 parser = argparse.ArgumentParser()
 
+#os.path.expanduser(f"~{pwd.getpwuid(os.geteuid())[0]}/")+'MW_batch_size_8/'
 #out_path- /scratch/public/results/25background_experiment/
-parser.add_argument('--out_path', default=os.path.expanduser(f"~{pwd.getpwuid(os.geteuid())[0]}/")+'MW_batch_size_8/')
+parser.add_argument('--out_path', default='/scratch/public/jitter/wt/experiment_results/')
 #train_path- /scratch/public/txt_files/25background_experiment/
-parser.add_argument('--train_path', default='/scratch/public/txt_files/cyclegan_txt_files/')
-parser.add_argument('--val_path', default='/scratch/public/domain_experiment/BC_team_domain_experiment/')
+parser.add_argument('--train_path', default='/scratch/public/jitter/wt/experiments/')
+parser.add_argument('--experiment', default='Optimal_Ratio')
+parser.add_argument('--val_path', default='/scratch/public/jitter/wt/experiments/Test/')
 parser.add_argument('--epochs', default='300')
 parser.add_argument('--device', default='0')
 args = parser.parse_args()
@@ -21,8 +23,9 @@ args = parser.parse_args()
 out_path = args.out_path
 train_path = args.train_path
 val_path = args.val_path
+experiment = args.experiment
 
-domains = ["EM", "NE", "NW", "SW"]
+domains = ["EM", "SW", "NW"]
 
 combinations = list(itertools.product(domains, repeat=2))
 
@@ -32,29 +35,33 @@ combinations = list(itertools.product(domains, repeat=2))
     #element tuple of (train, val)
 #    return "MW" in element[0] and "MW" not in element[1]
 
-def containsDuplicate(element):
-  return element[0] != element[1]
+#def containsDuplicate(element):
+#  return element[0] != element[1]
 
 #Gets combinations with MW in it
 #MW_combos = list(filter(containsMW, combinations))
 
-reg_combos = list(filter(containsDuplicate, combinations))
+#reg_combos = list(filter(containsDuplicate, combinations))
+
+experiment_path = os.path.join(train_path, experiment + "/")
 
 datasets = []
-for combo in reg_combos:
+for combo in combinations:
   print(combo)
   for i in range(0,4):
-    dataset_string = """Dataset(img_txt=train_path+'train_{src}_val_{dst}_imgs.txt',
-                      lbl_txt=train_path+'train_{src}_val_{dst}_lbls.txt',
+    dataset_string = """Dataset(img_txt=experiment_path+'Train_{src}_Test_{dst}_Images.txt',
+                      lbl_txt=experiment_path+'Train_{src}_Test_{dst}_Labels.txt',
                       out_dir=out_path+'t_{src}_v_{dst}_{i}/',
-                      img_txt_val=val_path+'Train {src} Val {dst} 100 real 75 syn/baseline/val_img_paths.txt',
-                      lbl_txt_val=val_path+'Train {src} Val {dst} 100 real 75 syn/baseline/val_lbl_paths.txt')""".format(src=combo[0],dst=combo[1],i=i)
+                      img_txt_val=val_path+'{dst}_Images.txt',
+                      lbl_txt_val=val_path+'{dst}_Labels.txt',
+                      img_txt_supplement=experiment_path+'Train_{src}_Test_{dst}_Supplement_Images.txt',
+                      lbl_txt_supplement=experiment_path+'Train_{src}_Test_{dst}_Supplement_Labels.txt')""".format(src=combo[0],dst=combo[1],i=i)
     datasets.append(eval(dataset_string))
 
 #Could create some variable that does not use every trial
 
 for trial in datasets:
-    subprocess.run(['python', 'run_save_train_test.py',
+  subprocess.run(['python', 'run_save_train_test.py',
                     '--img_list', trial.get_img_txt(), 
                     '--lbl_list', trial.get_lbl_txt(),
                     '--epochs', args.epochs,
@@ -62,4 +69,7 @@ for trial in datasets:
                     '--img_list_val', trial.get_img_txt_val(),
                     '--lbl_list_val', trial.get_lbl_txt_val(),
                     '--version', 'v2',
-                    '--device', args.device])
+                    '--device', args.device,
+                    '--supplement_batch_size', '1',
+                    '--img_list_supplement', trial.get_img_txt_supplement(),
+                    '--lbl_list_supplement', trial.get_lbl_txt_supplement()])

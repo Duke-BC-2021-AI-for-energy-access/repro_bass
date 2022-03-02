@@ -36,5 +36,5 @@ for file in cycle_files:
     true_label = labels_dir + label_fname
 
     output_label = multiple_replace(reg_dict, file)
-
+    #print(true_label, output_label)
     copyfile(true_label, output_label)
