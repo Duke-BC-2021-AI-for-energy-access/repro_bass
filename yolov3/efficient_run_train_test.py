@@ -14,10 +14,10 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--out_path', default='/scratch/public/jitter/wt/experiment_results/')
 #train_path- /scratch/public/txt_files/25background_experiment/
 parser.add_argument('--train_path', default='/scratch/public/jitter/wt/experiments/')
-parser.add_argument('--experiment', default='Optimal_Ratio')
+parser.add_argument('--experiment', default='Baseline')
 parser.add_argument('--val_path', default='/scratch/public/jitter/wt/experiments/Test/')
 parser.add_argument('--epochs', default='300')
-parser.add_argument('--device', default='0')
+parser.add_argument('--device', default='1')
 args = parser.parse_args()
 
 out_path = args.out_path
@@ -25,30 +25,29 @@ train_path = args.train_path
 val_path = args.val_path
 experiment = args.experiment
 
-domains = ["EM", "SW", "NW"]
+domains = ["EM", "SW"]
 
 combinations = list(itertools.product(domains, repeat=2))
 
 #Adds filter as necessary
 
-#def containsMW(element):
-    #element tuple of (train, val)
-#    return "MW" in element[0] and "MW" not in element[1]
-
 #def containsDuplicate(element):
 #  return element[0] != element[1]
 
-#Gets combinations with MW in it
-#MW_combos = list(filter(containsMW, combinations))
-
 #reg_combos = list(filter(containsDuplicate, combinations))
+
+def optimalRatioFilter(element):
+  return element[0] != element[1]
+
+optimal_ratio_combos = list(filter(optimalRatioFilter, combinations))
 
 experiment_path = os.path.join(train_path, experiment + "/")
 
 datasets = []
-for combo in combinations:
+for combo in optimal_ratio_combos:
   print(combo)
   for i in range(0,4):
+    #if not baseline_boolean:
     dataset_string = """Dataset(img_txt=experiment_path+'Train_{src}_Test_{dst}_Images.txt',
                       lbl_txt=experiment_path+'Train_{src}_Test_{dst}_Labels.txt',
                       out_dir=out_path+'t_{src}_v_{dst}_{i}/',
@@ -56,6 +55,12 @@ for combo in combinations:
                       lbl_txt_val=val_path+'{dst}_Labels.txt',
                       img_txt_supplement=experiment_path+'Train_{src}_Test_{dst}_Supplement_Images.txt',
                       lbl_txt_supplement=experiment_path+'Train_{src}_Test_{dst}_Supplement_Labels.txt')""".format(src=combo[0],dst=combo[1],i=i)
+    #else:
+    #  dataset_string = """Dataset(img_txt=experiment_path+'Train_{src}_Test_{dst}_Images.txt',
+    #              lbl_txt=experiment_path+'Train_{src}_Test_{dst}_Labels.txt',
+    #              out_dir=out_path+'t_{src}_v_{dst}_{i}/',
+    #              img_txt_val=val_path+'{dst}_Images.txt',
+    #              lbl_txt_val=val_path+'{dst}_Labels.txt')""".format(src=combo[0],dst=combo[1],i=i)
     datasets.append(eval(dataset_string))
 
 #Could create some variable that does not use every trial
@@ -70,6 +75,7 @@ for trial in datasets:
                     '--lbl_list_val', trial.get_lbl_txt_val(),
                     '--version', 'v2',
                     '--device', args.device,
+                    '--experiment', experiment,
                     '--supplement_batch_size', '1',
                     '--img_list_supplement', trial.get_img_txt_supplement(),
                     '--lbl_list_supplement', trial.get_lbl_txt_supplement()])

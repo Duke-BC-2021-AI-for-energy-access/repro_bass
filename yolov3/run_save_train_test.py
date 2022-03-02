@@ -15,8 +15,9 @@ parser.add_argument('--lbl_list_val', type=str, default='none', help='directory 
 parser.add_argument('--img_list_supplement', type=str, default='none', help='directory of supplement imgs')                                             # if yes, input absolute path
 parser.add_argument('--lbl_list_supplement', type=str, default='none', help='directory of supplement labels') 
 parser.add_argument('--version', type=str, default='v0', help='version num')
-parser.add_argument('--device', type=str, default='0', help='gpu id')
+parser.add_argument('--device', type=str, default='1', help='gpu id')
 parser.add_argument('--supplement_batch_size', type=str, default='1', help='supplement batch size')
+parser.add_argument('--experiment', type=str, default='1', help='returns name of experiment')
 
 
 opt = parser.parse_args()
@@ -93,8 +94,9 @@ device = opt.device
 img_list_supplement = opt.img_list_supplement
 lbl_list_supplement = opt.lbl_list_supplement
 supplement_batch_size = opt.supplement_batch_size
+baseline_boolean = opt.experiment == "Baseline"
 
-def main(img_list, lbl_list, out_root, epochs, version, device):
+def main(img_list, lbl_list, out_root, epochs, version, device, img_list_supplement, lbl_list_supplement, supplement_batch_size):
     make_data_file(out_root, img_list, lbl_list, version, img_list_val, lbl_list_val, img_list_supplement, lbl_list_supplement)
     print("Made .data file\n")
     # print((out_root, img_list, lbl_list, version, img_list_val, lbl_list_val))
@@ -111,4 +113,4 @@ def main(img_list, lbl_list, out_root, epochs, version, device):
     print("Copied outputs\n")
 
 
-main(img_list, lbl_list, out_root, epochs, version, device)
+main(img_list, lbl_list, out_root, epochs, version, device, img_list_supplement, lbl_list_supplement, supplement_batch_size)

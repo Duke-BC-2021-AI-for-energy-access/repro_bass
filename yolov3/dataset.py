@@ -1,5 +1,5 @@
 class Dataset():
-    def __init__(self, img_txt, lbl_txt, out_dir, img_txt_val, lbl_txt_val, img_txt_supplement, lbl_txt_supplement):
+    def __init__(self, img_txt, lbl_txt, out_dir, img_txt_val, lbl_txt_val, img_txt_supplement=None, lbl_txt_supplement=None):
         self.img_txt = img_txt
         self.lbl_txt = lbl_txt
         self.out_dir = out_dir

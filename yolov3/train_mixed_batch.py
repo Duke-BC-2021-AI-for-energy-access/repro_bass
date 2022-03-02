@@ -111,7 +111,7 @@ def train(hyp):
     hyp['cls'] *= nc / 80  # update coco-tuned hyp['cls'] to current dataset
 
     ###added for mb###
-    loop_count = int(image_number) // batch_size
+    #loop_count = int(image_number) // batch_size
 
     # Remove previous results
     for f in glob.glob('*_batch*.jpg') + glob.glob(results_file):
@@ -265,6 +265,13 @@ def train(hyp):
                                              pin_memory=True,
                                              collate_fn=dataset.collate_fn)
 
+
+    print("LENGTHS")
+    print(len(dataset))
+    print(len(synth_dataset))
+    print(len(dataloader))
+    print(len(synth_dataloader))
+
     # Model parameters
     model.nc = nc  # attach number of classes to model
     model.hyp = hyp  # attach hyperparameters to model
@@ -278,7 +285,8 @@ def train(hyp):
     ema = torch_utils.ModelEMA(model)
 
     # Start training
-    nb = len(dataloader)  # number of batches
+    #nb = len(dataloader)  # number of batches
+    nb = loop_count
     n_burn = max(3 * nb, 500)  # burn-in iterations, max(3 epochs, 500 iterations)
     maps = np.zeros(nc)  # mAP per class
     # torch.autograd.set_detect_anomaly(True)
