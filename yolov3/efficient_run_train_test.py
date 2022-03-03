@@ -50,7 +50,7 @@ for combo in optimal_ratio_combos:
     if not experiment == "Baseline":
       dataset_string = """Dataset(img_txt=experiment_path+'Train_{src}_Test_{dst}_Images.txt',
                         lbl_txt=experiment_path+'Train_{src}_Test_{dst}_Labels.txt',
-                        out_dir=out_path+'t_{src}_v_{dst}_{i}/',
+                        out_dir='t_{src}_v_{dst}_{i}/',
                         img_txt_val=val_path+'{dst}_Images.txt',
                         lbl_txt_val=val_path+'{dst}_Labels.txt',
                         img_txt_supplement=experiment_path+'Train_{src}_Test_{dst}_Supplement_Images.txt',
