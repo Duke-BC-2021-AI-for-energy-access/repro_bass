@@ -42,6 +42,8 @@ def optimalRatioFilter(element):
 optimal_ratio_combos = list(filter(optimalRatioFilter, combinations))
 
 experiment_path = os.path.join(train_path, experiment + "/")
+experiment_out_path = os.path.join(out_path, experiment + "/")
+
 
 datasets = []
 for combo in optimal_ratio_combos:
@@ -50,7 +52,7 @@ for combo in optimal_ratio_combos:
     if not experiment == "Baseline":
       dataset_string = """Dataset(img_txt=experiment_path+'Train_{src}_Test_{dst}_Images.txt',
                         lbl_txt=experiment_path+'Train_{src}_Test_{dst}_Labels.txt',
-                        out_dir='t_{src}_v_{dst}_{i}/',
+                        out_dir=experiment_out_path+'t_{src}_v_{dst}_{i}/',
                         img_txt_val=val_path+'{dst}_Images.txt',
                         lbl_txt_val=val_path+'{dst}_Labels.txt',
                         img_txt_supplement=experiment_path+'Train_{src}_Test_{dst}_Supplement_Images.txt',
