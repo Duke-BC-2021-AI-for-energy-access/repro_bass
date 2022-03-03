@@ -388,11 +388,11 @@ def train(hyp):
             pbar.set_description(s)
 
             # Plot
-            if ni < 1:
-                f = 'train_mixedbatch%g.jpg' % i  # filename
-                res = plot_images(images=imgs, targets=targets, paths=paths, fname=f)
+            if ni < 5:
+                fname = 'train_mixedbatch%g.jpg' % i
+                plot_images(imgs=imgs, targets=targets, paths=paths, fname=fname)
                 if tb_writer:
-                    tb_writer.add_image(f, res, dataformats='HWC', global_step=epoch)
+                    tb_writer.add_image(fname, cv2.imread(fname)[:, :, ::-1], dataformats='HWC')
                     # tb_writer.add_graph(model, imgs)  # add model to tensorboard
 
             # end batch ------------------------------------------------------------------------------------------------

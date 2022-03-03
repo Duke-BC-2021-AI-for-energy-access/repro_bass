@@ -30,7 +30,6 @@ experiment = args.experiment
 experiment_name = args.experiment_name
 supplemental_batch_size =  args.supplemental_batch_size
 
-
 domains = ["EM", "SW"]
 
 combinations = list(itertools.product(domains, repeat=2))
