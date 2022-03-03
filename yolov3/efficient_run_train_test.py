@@ -19,6 +19,8 @@ parser.add_argument('--experiment_name', default='Optimal_Ratio_2_CG')
 parser.add_argument('--val_path', default='/scratch/public/jitter/wt/experiments/Test/')
 parser.add_argument('--epochs', default='300')
 parser.add_argument('--device', default='1')
+parser.add_argument('--supplemental_batch_size', default='1')
+
 args = parser.parse_args()
 
 out_path = args.out_path
@@ -26,6 +28,8 @@ train_path = args.train_path
 val_path = args.val_path
 experiment = args.experiment
 experiment_name = args.experiment_name
+supplemental_batch_size =  args.supplemental_batch_size
+
 
 domains = ["EM", "SW"]
 
@@ -79,6 +83,6 @@ for trial in datasets:
                     '--version', 'v2',
                     '--device', args.device,
                     '--experiment', experiment,
-                    '--supplement_batch_size', '1',
+                    '--supplement_batch_size', supplemental_batch_size,
                     '--img_list_supplement', trial.get_img_txt_supplement(),
                     '--lbl_list_supplement', trial.get_lbl_txt_supplement()])
