@@ -124,4 +124,4 @@ def main(img_list, lbl_list, out_root, epochs, version, device, img_list_supplem
     print("Copied outputs\n")
 
 
-main(img_list, lbl_list, out_root, epochs, version, device, img_list_supplement, lbl_list_supplement, supplement_batch_size)
+main(img_list, lbl_list, out_root, epochs, version, device, img_list_supplement, lbl_list_supplement, supplement_batch_size, baseline_boolean)

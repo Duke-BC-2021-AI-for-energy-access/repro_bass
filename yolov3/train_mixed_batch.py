@@ -251,7 +251,7 @@ def train(hyp):
                                                 num_workers=nw, 
                                                 shuffle=True, 
                                                 pin_memory=True, 
-                                                collate_fn=coco_dataset.collate_fn)
+                                                collate_fn=dataset.collate_fn)
 
     # Testloader
     testloader = torch.utils.data.DataLoader(LoadImagesAndLabels(test_path, imgsz_test, batch_size,
@@ -265,11 +265,11 @@ def train(hyp):
                                              collate_fn=dataset.collate_fn)
 
 
-    print("LENGTHS")
-    print(len(dataset))
-    print(len(synth_dataset))
-    print(len(dataloader))
-    print(len(synth_dataloader))
+    #print("LENGTHS")
+    #print(len(dataset))
+    #print(len(synth_dataset))
+    #print(len(dataloader))
+    #print(len(synth_dataloader))
 
     # Model parameters
     model.nc = nc  # attach number of classes to model
@@ -282,6 +282,8 @@ def train(hyp):
 
     # Model EMA
     ema = torch_utils.ModelEMA(model)
+
+    loop_count = (len(dataset) + len(synth_dataset)) // batch_size
 
     # Start training
     #nb = len(dataloader)  # number of batches
@@ -310,10 +312,11 @@ def train(hyp):
         if dataloader:
             gen_ir_data = infi_loop(dataloader)
         if synth_dataloader:
-            gen_synth_data = infi_loop(coco_dataloader)
+            gen_synth_data = infi_loop(synth_dataloader)
         
         
-        pbar = tqdm(enumerate(dataloader), total=nb)  # progress bar
+        #pbar = tqdm(enumerate(dataloader), total=nb)  # progress bar
+        pbar = tqdm(range(0, nb), total=nb)
 
         #, (imgs, targets, paths, _) 
         for i in pbar:  # batch -------------------------------------------------------------
@@ -328,7 +331,6 @@ def train(hyp):
                 imgs = torch.cat([imgs_synth, imgs_ir], dim=0)
                 targets = torch.cat([targets_synth, targets_ir],dim=0)
                 paths = paths_synth + paths_ir
-
 
             ni = i + nb * epoch  # number integrated batches (since train start)
             
