@@ -51,13 +51,12 @@ def make_data_file(out_root, img_list, lbl_list, version, img_list_val, lbl_list
 
 def run_train(out_root, epochs, device, supplement_batch_size, baseline_boolean):
     if baseline_boolean:
-        subprocess.run(['python', 'train_mixed_batch.py',                                                    # train gp_gan
+        subprocess.run(['python', 'train.py',                                                    # train gp_gan
                         '--cfg', './cfg/yolov3-spp.cfg',
                         '--data', out_root + 'train_data_' + version + '.data',
                         '--img-size', '608',
                         '--epochs', epochs,
                         '--batch-size', '8',
-                        '--supplement-batch-size', supplement_batch_size,
                         '--device', device])
     else:
         subprocess.run(['python', 'train_mixed_batch.py',                                                    # train gp_gan
