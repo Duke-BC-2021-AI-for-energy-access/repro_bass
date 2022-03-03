@@ -232,7 +232,6 @@ def train(hyp):
                                     augment=True,
                                     hyp=hyp, 
                                     rect=False, 
-                                    cache_labels=True, 
                                     cache_images=opt.cache_images,
                                     single_cls=opt.single_cls)
 

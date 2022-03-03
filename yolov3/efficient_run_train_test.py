@@ -47,20 +47,20 @@ datasets = []
 for combo in optimal_ratio_combos:
   print(combo)
   for i in range(0,4):
-    #if not baseline_boolean:
-    dataset_string = """Dataset(img_txt=experiment_path+'Train_{src}_Test_{dst}_Images.txt',
-                      lbl_txt=experiment_path+'Train_{src}_Test_{dst}_Labels.txt',
-                      out_dir=out_path+'t_{src}_v_{dst}_{i}/',
-                      img_txt_val=val_path+'{dst}_Images.txt',
-                      lbl_txt_val=val_path+'{dst}_Labels.txt',
-                      img_txt_supplement=experiment_path+'Train_{src}_Test_{dst}_Supplement_Images.txt',
-                      lbl_txt_supplement=experiment_path+'Train_{src}_Test_{dst}_Supplement_Labels.txt')""".format(src=combo[0],dst=combo[1],i=i)
-    #else:
-    #  dataset_string = """Dataset(img_txt=experiment_path+'Train_{src}_Test_{dst}_Images.txt',
-    #              lbl_txt=experiment_path+'Train_{src}_Test_{dst}_Labels.txt',
-    #              out_dir=out_path+'t_{src}_v_{dst}_{i}/',
-    #              img_txt_val=val_path+'{dst}_Images.txt',
-    #              lbl_txt_val=val_path+'{dst}_Labels.txt')""".format(src=combo[0],dst=combo[1],i=i)
+    if not baseline_boolean:
+      dataset_string = """Dataset(img_txt=experiment_path+'Train_{src}_Test_{dst}_Images.txt',
+                        lbl_txt=experiment_path+'Train_{src}_Test_{dst}_Labels.txt',
+                        out_dir=out_path+'t_{src}_v_{dst}_{i}/',
+                        img_txt_val=val_path+'{dst}_Images.txt',
+                        lbl_txt_val=val_path+'{dst}_Labels.txt',
+                        img_txt_supplement=experiment_path+'Train_{src}_Test_{dst}_Supplement_Images.txt',
+                        lbl_txt_supplement=experiment_path+'Train_{src}_Test_{dst}_Supplement_Labels.txt')""".format(src=combo[0],dst=combo[1],i=i)
+    else:
+      dataset_string = """Dataset(img_txt=experiment_path+'Train_{src}_Test_{dst}_Images.txt',
+                  lbl_txt=experiment_path+'Train_{src}_Test_{dst}_Labels.txt',
+                  out_dir=out_path+'t_{src}_v_{dst}_{i}/',
+                  img_txt_val=val_path+'{dst}_Images.txt',
+                  lbl_txt_val=val_path+'{dst}_Labels.txt')""".format(src=combo[0],dst=combo[1],i=i)
     datasets.append(eval(dataset_string))
 
 #Could create some variable that does not use every trial
