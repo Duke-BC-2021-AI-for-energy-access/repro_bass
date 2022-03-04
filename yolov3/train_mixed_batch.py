@@ -1,5 +1,6 @@
 import argparse
 
+import torch
 import torch.distributed as dist
 import torch.optim as optim
 import torch.optim.lr_scheduler as lr_scheduler
@@ -16,6 +17,8 @@ try:  # Mixed precision training https://github.com/NVIDIA/apex
 except:
     print('Apex recommended for faster mixed precision training: https://github.com/NVIDIA/apex')
     mixed_precision = False  # not installed
+
+gradient_clipping_val = 1
 
 wdir = 'weights' + os.sep  # weights dir
 last = wdir + 'last.pt'
@@ -375,6 +378,7 @@ def train(hyp):
             else:
                 loss.backward()
 
+            torch.nn.utils.clip_grad_value_(model.parameters(), gradient_clipping_val)
             # Optimize
             if ni % accumulate == 0:
                 optimizer.step()
