@@ -14,12 +14,12 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--out_path', default='/scratch/public/jitter/wt/experiment_results/')
 #train_path- /scratch/public/txt_files/25background_experiment/
 parser.add_argument('--train_path', default='/scratch/public/jitter/wt/experiments/')
-parser.add_argument('--experiment', default='Optimal_Ratio')
-parser.add_argument('--experiment_name', default='Optimal_Ratio_2_CG')
+parser.add_argument('--experiment')
+parser.add_argument('--experiment_name')
 parser.add_argument('--val_path', default='/scratch/public/jitter/wt/experiments/Test/')
 parser.add_argument('--epochs', default='300')
-parser.add_argument('--device', default='1')
-parser.add_argument('--supplemental_batch_size', default='1')
+parser.add_argument('--device')
+parser.add_argument('--supplemental_batch_size', default='0')
 
 args = parser.parse_args()
 

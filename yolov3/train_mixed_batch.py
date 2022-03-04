@@ -18,7 +18,7 @@ except:
     print('Apex recommended for faster mixed precision training: https://github.com/NVIDIA/apex')
     mixed_precision = False  # not installed
 
-gradient_clipping_val = 1
+gradient_clipping_val = 5
 
 wdir = 'weights' + os.sep  # weights dir
 last = wdir + 'last.pt'
