@@ -507,6 +507,7 @@ if __name__ == '__main__':
     # global wdir, last, best, results_file
     dataroot = opt.data[:opt.data.rfind('/')] # opt.data should be in the form of .../.../.../....data. We only use its parent folder here.
     wdir = dataroot + os.sep + 'weights' + os.sep  # weights dir DONE prefix it with experiment name
+    os.system(f'mkdir -p "{wdir}"')
     last = wdir + 'last.pt'
     best = wdir + 'best.pt'
     results_file = 'results.txt'
