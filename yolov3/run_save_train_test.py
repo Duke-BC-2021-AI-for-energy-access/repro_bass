@@ -84,7 +84,7 @@ def copy_outputs(out_root, version):
         os.makedirs(out_root + version + '_outputs/')
 
     file_names = ['PR_curve.png', 'precision.txt', 'recall.txt', 'results.png', 'results.txt', 'test_batch0_gt.jpg', 'test_batch0_pred.jpg', 'train_batch0.jpg', 'test_results.txt', 'ious.txt']
-    file_names.extend(('weights/best.pt', 'weights/last.pt'))
+    file_names.extend((out_root + 'weights/best.pt', out_root + 'weights/last.pt'))
     for file in file_names:
         # SWITCH
         # shutil.copy2('/hdd/dataplus2021/whtest/repro_bass_300/yolov3/' + file, out_root + version + '_outputs/')
