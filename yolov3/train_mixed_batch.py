@@ -510,7 +510,7 @@ if __name__ == '__main__':
     os.system(f'mkdir -p "{wdir}"')
     last = wdir + 'last.pt'
     best = wdir + 'best.pt'
-    results_file = 'results.txt'
+    results_file = wdir + 'results.txt'
 
 
     device = torch_utils.select_device(opt.device, apex=mixed_precision, batch_size=opt.batch_size)
