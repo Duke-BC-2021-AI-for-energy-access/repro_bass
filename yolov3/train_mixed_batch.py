@@ -20,6 +20,8 @@ except:
 
 gradient_clipping_val = 5
 
+wdir, last, best, results_file = "", "", "", ""
+
 ###added for mb###
 def infi_loop(dl):
     while True:
