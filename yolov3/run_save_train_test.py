@@ -58,7 +58,7 @@ def run_train(out_root, epochs, device, supplement_batch_size, baseline_boolean)
                         '--epochs', epochs,
                         '--batch-size', '8',
                         '--device', device])
-    else:
+    else: prefix it with experiment name prefix it with experiment name
         subprocess.run(['python', 'train_mixed_batch.py',                                                    # train gp_gan
                         '--cfg', './cfg/yolov3-spp.cfg',
                         '--data', out_root + 'train_data_' + version + '.data',
@@ -75,7 +75,7 @@ def run_test(out_root, device):
                     '--cfg', './cfg/yolov3-spp.cfg',
                     '--data', out_root + 'train_data_' + version + '.data',
                     '--img-size', '608',
-                    '--weights', 'weights/last.pt',
+                    '--weights', out_root + 'weights/last.pt', # DONE
                     '--device', device])
 
 
