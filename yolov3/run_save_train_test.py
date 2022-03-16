@@ -119,8 +119,8 @@ def main(img_list, lbl_list, out_root, epochs, version, device, img_list_supplem
     run_test(out_root, device)
     print("Finished Testing\n")
 
-    copy_outputs(out_root, version)
-    print("Copied outputs\n")
+    # copy_outputs(out_root, version)
+    # print("Copied outputs\n")
 
 
 main(img_list, lbl_list, out_root, epochs, version, device, img_list_supplement, lbl_list_supplement, supplement_batch_size, baseline_boolean)

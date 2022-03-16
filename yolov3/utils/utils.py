@@ -9,6 +9,8 @@ from copy import copy
 from pathlib import Path
 from sys import platform
 
+import wandb
+
 import cv2
 import matplotlib
 import matplotlib.pyplot as plt
@@ -429,6 +431,7 @@ def compute_loss(p, targets, model):  # predictions, targets, model
             lcls *= g / nt / model.nc
             lbox *= g / nt
 
+    wandb.log({'lbox': lbox, 'lobj': lobj, 'lcls': lcls})
     loss = lbox + lobj + lcls
     return loss, torch.cat((lbox, lobj, lcls, loss)).detach()
 
