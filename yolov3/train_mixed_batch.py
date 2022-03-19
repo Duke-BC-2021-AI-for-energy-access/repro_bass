@@ -31,6 +31,11 @@ gradient_clipping_val = None
 
 wdir, last, best, results_file = "", "", "", ""
 
+import sys
+
+def eprint(*args, **kwargs):
+    print(*args, file=sys.stderr, **kwargs)
+
 ###added for mb###
 def infi_loop(dl):
     while True:
@@ -372,14 +377,18 @@ def train(hyp):
             pred = model(imgs)
 
             # Loss
-            loss, loss_items = compute_loss(pred, targets, model)
+            log_wandb = True if i % wandb_log_frequency == 0 else False
+            loss, loss_items = compute_loss(pred, targets, model, log_wandb=log_wandb)
+            print(f'loss_items: {loss_items}')
 
             if i % wandb_log_frequency == 0:
                 wandb.log({"loss": loss})
+                wandb.log({"loss_items": loss_items})
                 wandb.watch(model)
 
             if not torch.isfinite(loss):
                 wandb.log({"loss": loss})
+                eprint('WARNING: non-finite loss, ending training ', loss_items)
                 print('WARNING: non-finite loss, ending training ', loss_items)
                 return results
 
