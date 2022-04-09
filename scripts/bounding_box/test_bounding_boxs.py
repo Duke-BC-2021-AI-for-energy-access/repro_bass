@@ -63,7 +63,7 @@ def multiple_replace(dict, text):
 #Output directory
 #results_dir = "/scratch/public/scripts/bbox_test2/"
 
-def create_boxes(my_txt_dir, my_img_dir, results_dir):
+def create_boxes(txts, imgs, results_dir, dir_or_file):
   """
 
   1) Grabs all images and loops over them
@@ -72,20 +72,28 @@ def create_boxes(my_txt_dir, my_img_dir, results_dir):
   for an image
 
   Args:
-      my_txt_dir ([type]): Directory holding label files for images (YOLO formatting)
-      my_img_dir ([type]): Directory holding image files
+      txts ([type]): Directory holding label files for images (YOLO formatting)
+      imgs ([type]): Directory holding image files or txt file holding image file names
       results_dir ([type]): Directory to output images with bounding boxes on them
   """
 
   if not os.path.exists(results_dir):
-    os.mkdir(results_dir)
+    os.makedirs(results_dir)
 
   #my_imgs = glob.glob(my_img_dir + "*.jpg")
 
+  if not dir_or_file:
+    my_txts = glob.glob(txts + "*.txt")
+    my_imgs = [imgs + x[len(txts):].replace(".txt", ".jpg") for x in my_txts]
+  else:
+    with open(txts, "r") as f:
+      my_txts = f.read().split("\n")
+    with open(imgs, "r") as f:
+      my_imgs = f.read().split("\n")
+    
+  #my_txts = [x.replace("/Cyclegan/s_EM_t_SW/", "/EM/Real/") for x in my_txts]
+  #my_imgs = [x.replace("/Cyclegan/s_EM_t_SW/", "/EM/Real/") for x in my_imgs]
 
-  my_txts = glob.glob(my_txt_dir + "*.txt")
-
-  my_imgs = [my_img_dir + x[len(my_txt_dir):].replace(".txt", ".jpg") for x in my_txts]
 
   #my_txts = ["/scratch/dataplus2021/data/labels/naip_2656_IA_WND_i1j1.txt", "/scratch/dataplus2021/data/labels/naip_2656_IA_WND_i0j1.txt", "/scratch/dataplus2021/data/labels/naip_1203_CA_WND_i0j0.txt"]
   #my_imgs = [x.replace("labels", "images").replace(".txt", ".jpg") for x in my_txts]
@@ -105,14 +113,17 @@ def create_boxes(my_txt_dir, my_img_dir, results_dir):
     with open(my_txt_file, "r") as f:
         lst = [float(x) for x in f.read().split()]
 
-    x_ctrs = [i*608 for i in lst[1::5]]
-    y_ctrs = [i*608 for i in lst[2::5]]
-    widths = [i*304 for i in lst[3::5]]
-    heights = [i*304  for i in lst[4::5]]
-
     print(my_png_file)
+    print(my_txt_file)
 
     my_img = cv2.imread(my_png_file)
+
+    out_h, out_w, _ = my_img.shape
+
+    x_ctrs = [i*out_w for i in lst[1::5]]
+    y_ctrs = [i*out_h for i in lst[2::5]]
+    widths = [i*(out_w / 2) for i in lst[3::5]]
+    heights = [i*(out_h / 2)  for i in lst[4::5]]
 
     #Could add "bbox_"
     new_fname = results_dir  + my_png_file[my_png_file.rfind("/")+1:]
@@ -120,3 +131,5 @@ def create_boxes(my_txt_dir, my_img_dir, results_dir):
     print(new_fname)
 
     plot_one_box(x_ctrs=x_ctrs, y_ctrs=y_ctrs, widths=widths, heights=heights,img=my_img,fname=new_fname)
+
+

@@ -1,5 +1,6 @@
 import argparse
 
+import torch
 import torch.distributed as dist
 import torch.optim as optim
 import torch.optim.lr_scheduler as lr_scheduler
@@ -17,10 +18,9 @@ except:
     print('Apex recommended for faster mixed precision training: https://github.com/NVIDIA/apex')
     mixed_precision = False  # not installed
 
-wdir = 'weights' + os.sep  # weights dir
-last = wdir + 'last.pt'
-best = wdir + 'best.pt'
-results_file = 'results.txt'
+gradient_clipping_val = 5
+
+wdir, last, best, results_file = "", "", "", ""
 
 ###added for mb###
 def infi_loop(dl):
@@ -378,6 +378,7 @@ def train(hyp):
             else:
                 loss.backward()
 
+            torch.nn.utils.clip_grad_value_(model.parameters(), gradient_clipping_val)
             # Optimize
             if ni % accumulate == 0:
                 optimizer.step()
@@ -504,6 +505,17 @@ if __name__ == '__main__':
     opt.data = check_file(opt.data)  # check file
     print(opt)
     opt.img_size.extend([opt.img_size[-1]] * (3 - len(opt.img_size)))  # extend to 3 sizes (min, max, test)
+
+    # initialize weights directories
+    # global wdir, last, best, results_file
+    dataroot = opt.data[:opt.data.rfind('/')] # opt.data should be in the form of .../.../.../....data. We only use its parent folder here.
+    wdir = dataroot + os.sep + 'weights' + os.sep  # weights dir DONE prefix it with experiment name
+    os.system(f'mkdir -p "{wdir}"')
+    last = wdir + 'last.pt'
+    best = wdir + 'best.pt'
+    results_file = wdir + 'results.txt'
+
+
     device = torch_utils.select_device(opt.device, apex=mixed_precision, batch_size=opt.batch_size)
     if device.type == 'cpu':
         mixed_precision = False
