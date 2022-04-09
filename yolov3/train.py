@@ -79,7 +79,9 @@ def train(hyp):
     init_seeds()
     data_dict = parse_data_cfg(data)
     train_path = data_dict['train']
+    train_label_path = data_dict['train_label']
     test_path = data_dict['valid']
+    test_label_path = data_dict['valid_label']
     nc = 1 if opt.single_cls else int(data_dict['classes'])  # number of classes
     hyp['cls'] *= nc / 80  # update coco-tuned hyp['cls'] to current dataset
 
@@ -190,7 +192,7 @@ def train(hyp):
         model.yolo_layers = model.module.yolo_layers  # move yolo layer indices to top level
 
     # Dataset
-    dataset = LoadImagesAndLabels(train_path, img_size, batch_size,
+    dataset = LoadImagesAndLabels(train_path, train_label_path, img_size, batch_size,
                                   augment=True,
                                   hyp=hyp,  # augmentation hyperparameters
                                   rect=opt.rect,  # rectangular training
@@ -208,7 +210,7 @@ def train(hyp):
                                              collate_fn=dataset.collate_fn)
 
     # Testloader
-    testloader = torch.utils.data.DataLoader(LoadImagesAndLabels(test_path, imgsz_test, batch_size,
+    testloader = torch.utils.data.DataLoader(LoadImagesAndLabels(test_path, test_label_path, imgsz_test, batch_size,
                                                                  hyp=hyp,
                                                                  rect=True,
                                                                  cache_images=opt.cache_images,

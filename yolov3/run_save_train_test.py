@@ -83,7 +83,7 @@ def copy_outputs(out_root, version):
     if not os.path.exists(out_root + version + '_outputs/'):                                                                    # make root dir
         os.makedirs(out_root + version + '_outputs/')
 
-    file_names = ['PR_curve.png', 'precision.txt', 'recall.txt', 'results.png', 'results.txt', 'test_batch0_gt.jpg', 'test_batch0_pred.jpg', 'train_batch0.jpg', 'test_results.txt', 'ious.txt']
+    file_names = ['PR_curve.png', 'precision.txt', 'recall.txt', 'results.png', 'results.txt', 'test_batch0_gt.jpg', 'test_batch0_pred.jpg', 'train_mixedbatch0.jpg', 'train_mixedbatch1.jpg','train_mixedbatch2.jpg','train_mixedbatch3.jpg','train_mixedbatch4.jpg', 'test_results.txt', 'ious.txt']
     file_names.extend(('weights/best.pt', 'weights/last.pt'))
     for file in file_names:
         # SWITCH
@@ -104,7 +104,7 @@ device = opt.device
 img_list_supplement = opt.img_list_supplement
 lbl_list_supplement = opt.lbl_list_supplement
 supplement_batch_size = opt.supplement_batch_size
-baseline_boolean = opt.experiment == "Baseline"
+baseline_boolean = opt.experiment == "Baseline" or opt.experiment == "Color_Equalize_Domain"
 
 def main(img_list, lbl_list, out_root, epochs, version, device, img_list_supplement, lbl_list_supplement, supplement_batch_size, baseline_boolean):
     make_data_file(out_root, img_list, lbl_list, version, img_list_val, lbl_list_val, img_list_supplement, lbl_list_supplement, baseline_boolean)
