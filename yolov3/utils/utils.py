@@ -9,6 +9,8 @@ from copy import copy
 from pathlib import Path
 from sys import platform
 
+import wandb
+
 import cv2
 import matplotlib
 import matplotlib.pyplot as plt
@@ -366,7 +368,7 @@ def smooth_BCE(eps=0.1):  # https://github.com/ultralytics/yolov3/issues/238#iss
     return 1.0 - 0.5 * eps, 0.5 * eps
 
 
-def compute_loss(p, targets, model):  # predictions, targets, model
+def compute_loss(p, targets, model, log_wandb=False):  # predictions, targets, model
     ft = torch.cuda.FloatTensor if p[0].is_cuda else torch.Tensor
     lcls, lbox, lobj = ft([0]), ft([0]), ft([0])
     tcls, tbox, indices, anchors = build_targets(p, targets, model)  # targets
@@ -428,6 +430,9 @@ def compute_loss(p, targets, model):  # predictions, targets, model
         if nt:
             lcls *= g / nt / model.nc
             lbox *= g / nt
+
+    if log_wandb:
+        wandb.log({'lbox': lbox, 'lobj': lobj, 'lcls': lcls})
 
     loss = lbox + lobj + lcls
     return loss, torch.cat((lbox, lobj, lcls, loss)).detach()
