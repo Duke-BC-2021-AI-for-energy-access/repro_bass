@@ -1,10 +1,6 @@
 yolov3/weights
 yolov3/runs
-yolov3/ious.txt
-yolov3/precision.txt
-yolov3/recall.txt
 **/*.jpg
-yolov3/wandb
 domain_experiment
 domain_txt_files
 domain_txt_files2
@@ -12,5 +8,3 @@ MW_txt_files
 MW_bg_txt_files
 __pycache__
 *.swp
-*.out
-training_scripts

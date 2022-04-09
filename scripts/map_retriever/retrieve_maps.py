@@ -16,7 +16,7 @@ def retrieve(directory, version, output_dir, output_fname):
         os.makedirs(output_dir)
         print(output_dir + " directory was made")
 
-    my_files = glob.glob(directory + "**/weightstest_results.txt", recursive=True)
+    my_files = glob.glob(directory + "**/v2_outputs/test_results.txt", recursive=True)
     my_files = sorted(my_files)
 
     #print(my_files)

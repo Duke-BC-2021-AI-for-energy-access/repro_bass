@@ -18,23 +18,9 @@ except:
     print('Apex recommended for faster mixed precision training: https://github.com/NVIDIA/apex')
     mixed_precision = False  # not installed
 
-# from https://stackoverflow.com/questions/11526975/set-random-seed-programwide-in-python, this seed only needs to be set once in the main program
-import random
-random.seed(1)
-
-import wandb
-wandb.init(project="repro_bass", entity="longyuxi")
-wandb_log_frequency = 50
-
-# gradient_clipping_val = 5
-gradient_clipping_val = None
+gradient_clipping_val = 5
 
 wdir, last, best, results_file = "", "", "", ""
-
-import sys
-
-def eprint(*args, **kwargs):
-    print(*args, file=sys.stderr, **kwargs)
 
 ###added for mb###
 def infi_loop(dl):
@@ -299,7 +285,6 @@ def train(hyp):
 
     loop_count = (len(dataset) + len(synth_dataset)) // batch_size
 
-
     # Start training
     #nb = len(dataloader)  # number of batches
     nb = loop_count
@@ -377,18 +362,8 @@ def train(hyp):
             pred = model(imgs)
 
             # Loss
-            log_wandb = True if i % wandb_log_frequency == 0 else False
-            loss, loss_items = compute_loss(pred, targets, model, log_wandb=log_wandb)
-            print(f'loss_items: {loss_items}')
-
-            if i % wandb_log_frequency == 0:
-                wandb.log({"loss": loss})
-                wandb.log({"loss_items": loss_items})
-                wandb.watch(model)
-
+            loss, loss_items = compute_loss(pred, targets, model)
             if not torch.isfinite(loss):
-                wandb.log({"loss": loss})
-                eprint('WARNING: non-finite loss, ending training ', loss_items)
                 print('WARNING: non-finite loss, ending training ', loss_items)
                 return results
 
@@ -400,10 +375,7 @@ def train(hyp):
             else:
                 loss.backward()
 
-
-            if gradient_clipping_val is not None:
-                torch.nn.utils.clip_grad_value_(model.parameters(), gradient_clipping_val)
-
+            torch.nn.utils.clip_grad_value_(model.parameters(), gradient_clipping_val)
             # Optimize
             if ni % accumulate == 0:
                 optimizer.step()
@@ -442,8 +414,7 @@ def train(hyp):
                                       save_json=final_epoch and is_coco,
                                       single_cls=opt.single_cls,
                                       dataloader=testloader,
-                                      multi_label=ni > n_burn,
-                                      dataroot=dataroot) #TODO
+                                      multi_label=ni > n_burn)
 
         # Write
         with open(results_file, 'a') as f:
@@ -541,8 +512,6 @@ if __name__ == '__main__':
     best = wdir + 'best.pt'
     results_file = wdir + 'results.txt'
 
-    wandb.config = {'supplement_batch_size': opt.supplement_batch_size,
-                    'wdir': wdir}
 
     device = torch_utils.select_device(opt.device, apex=mixed_precision, batch_size=opt.batch_size)
     if device.type == 'cpu':

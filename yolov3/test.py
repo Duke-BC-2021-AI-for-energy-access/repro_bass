@@ -21,12 +21,7 @@ def test(cfg,
          augment=False,
          model=None,
          dataloader=None,
-         multi_label=True,
-         dataroot=None):
-
-    if weights is not None:
-        dataroot = weights[:weights.rfind('/')] # opt.data should be in the form of .../.../.../....data. We only use its parent folder here.
-
+         multi_label=True):
     # Initialize/load model and set device
     if model is None:
         is_training = False
@@ -240,7 +235,7 @@ def test(cfg,
                   'See https://github.com/cocodataset/cocoapi/issues/356')
 
 
-    results_file = dataroot + 'test_results.txt'
+    results_file = 'test_results.txt'
     # Remove previous results
     try:
         f = open(results_file, 'r+')
