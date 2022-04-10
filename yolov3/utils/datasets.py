@@ -278,7 +278,6 @@ class LoadImagesAndLabels(Dataset):  # for training/testing
 
 
         try:
-            print(label_path)
             label_path = str(Path(label_path))  # os-agnostic
             parent = str(Path(label_path).parent) + os.sep
             if os.path.isfile(label_path):  # file
@@ -315,7 +314,7 @@ class LoadImagesAndLabels(Dataset):  # for training/testing
         # Define labels
         #self.label_files = [x.replace('images', 'labels').replace(os.path.splitext(x)[-1], '.txt')
                            # for x in self.img_files]
-        self.label_files = [x.replace('MW_labels', 'MW_images')
+        #self.label_files = [x.replace('MW_labels', 'MW_images')
                             for x in self.label_files]
 
         # Read image shapes (wh)
