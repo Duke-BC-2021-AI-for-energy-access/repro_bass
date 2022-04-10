@@ -315,7 +315,7 @@ class LoadImagesAndLabels(Dataset):  # for training/testing
         #self.label_files = [x.replace('images', 'labels').replace(os.path.splitext(x)[-1], '.txt')
                            # for x in self.img_files]
         #self.label_files = [x.replace('MW_labels', 'MW_images')
-                            for x in self.label_files]
+                           # for x in self.label_files]
 
         # Read image shapes (wh)
         sp = path.replace('.txt', '') + '.shapes'  # shapefile path
