@@ -256,7 +256,7 @@ class LoadStreams:  # multiple IP or RTSP cameras
         return 0  # 1E12 frames = 32 streams at 30 FPS for 30 years
 
 class LoadImagesAndLabels(Dataset):  # for training/testing
-    def __init__(self, path, img_size=416, batch_size=16, augment=False, hyp=None, rect=False, image_weights=False,
+    def __init__(self, path, label_path, img_size=416, batch_size=16, augment=False, hyp=None, rect=False, image_weights=False,
                  cache_images=False, single_cls=False, pad=0.0):
         try:
             path = str(Path(path))  # os-agnostic
@@ -271,6 +271,25 @@ class LoadImagesAndLabels(Dataset):  # for training/testing
                 raise Exception('%s does not exist' % path)
             #Image file
             self.img_files = [x.replace('/', os.sep) for x in f if os.path.splitext(x)[-1].lower() in img_formats]
+            #Label file
+            #self.label_files = [x.replace('/', os.sep) for x in f if os.path.splitext(x)[-1].lower() == ".txt"]
+        except:
+            raise Exception('Error loading data from %s. See %s' % (path, help_url))
+
+
+        try:
+            print(label_path)
+            label_path = str(Path(label_path))  # os-agnostic
+            parent = str(Path(label_path).parent) + os.sep
+            if os.path.isfile(label_path):  # file
+                with open(label_path, 'r') as f:
+                    f = f.read().splitlines()
+                    f = [x.replace('./', parent) if x.startswith('./') else x for x in f]  # local to global path
+            elif os.path.isdir(label_path):  # folder
+                f = glob.iglob(label_path + os.sep + '*.*')
+            else:
+                raise Exception('%s does not exist' % label_path)
+            self.label_files = [x.replace('/', os.sep) for x in f if os.path.splitext(x)[-1].lower() == ".txt"]
             #Label file
             #self.label_files = [x.replace('/', os.sep) for x in f if os.path.splitext(x)[-1].lower() == ".txt"]
         except:
@@ -294,8 +313,8 @@ class LoadImagesAndLabels(Dataset):  # for training/testing
         #print(self.img_files)
 
         # Define labels
-        self.label_files = [x.replace('images', 'labels').replace(os.path.splitext(x)[-1], '.txt')
-                            for x in self.img_files]
+        #self.label_files = [x.replace('images', 'labels').replace(os.path.splitext(x)[-1], '.txt')
+                           # for x in self.img_files]
         self.label_files = [x.replace('MW_labels', 'MW_images')
                             for x in self.label_files]
 
@@ -409,7 +428,7 @@ class LoadImagesAndLabels(Dataset):  # for training/testing
 
             pbar.desc = 'Caching labels %s (%g found, %g missing, %g empty, %g duplicate, for %g images)' % (
                 s, nf, nm, ne, nd, n)
-        assert nf > 0 or n == 20288, 'No labels found in %s. See %s' % (os.path.dirname(file) + os.sep, help_url)
+        #assert nf > 0 or n == 20288, 'No labels found in %s. See %s' % (os.path.dirname(file) + os.sep, help_url)
         if not labels_loaded and n > 1000:
             print('Saving labels to %s for faster future loading' % np_labels_path)
             np.save(np_labels_path, self.labels)  # save for next time
