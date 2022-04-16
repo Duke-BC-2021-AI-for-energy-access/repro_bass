@@ -12,7 +12,7 @@ from utils.utils import *
 def test(cfg,
          data,
          weights=None,
-         batch_size=16,
+         batch_size=8,
          imgsz=416,
          conf_thres=0.001,
          iou_thres=0.6,  # for nms
