@@ -8,15 +8,15 @@ A repository for the Bass Connections 2021-2022 team on using AI to improve ener
 
 Tasks: 
 - [ ] make a mark for all the scripts that people would explicitly call on and add documentation to each of them
-- [ ] organize the /scratch/public folder such that it looks like what jaden sent in student_announcements and set the directory for all the scripts to the /scratch/public
+- [ ] organize the /scratch/cek28 folder such that it looks like what jaden sent in student_announcements and set the directory for all the scripts to the /scratch/cek28
 - [ ] create a "best practices" guide to how to run experiments. most likely somee video guides. This can be done by the end of the year.
 
-# Organization of `/scratch/public`
+# Organization of `/scratch/cek28`
 
 *a copy of the message from Jaden Long sent in #student_announcements*
 ```
-My group discussed a solid way to reorganize the /scratch/public folder. The main reasoning is so that we can finally use GitHub to organize our scripts, and each team member can keep their own copy of the git repository that synchronizes through Github. Let me know how you like it:
-folders under /scratch/public (each user's git folder not shown here):
+My group discussed a solid way to reorganize the /scratch/cek28 folder. The main reasoning is so that we can finally use GitHub to organize our scripts, and each team member can keep their own copy of the git repository that synchronizes through Github. Let me know how you like it:
+folders under /scratch/cek28 (each user's git folder not shown here):
 ├── images - the folder for putting all the images and labels. Everyone will have read and write access to every part of it.
 │   ├── BC_team_domain_experiments
 │   ├── MW_images

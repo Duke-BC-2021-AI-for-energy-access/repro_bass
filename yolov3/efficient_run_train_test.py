@@ -10,13 +10,13 @@ repo_path = os.path.expanduser(f"~{pwd.getpwuid(os.geteuid())[0]}/") + 'repro_ba
 parser = argparse.ArgumentParser()
 
 #os.path.expanduser(f"~{pwd.getpwuid(os.geteuid())[0]}/")+'MW_batch_size_8/'
-#out_path- /scratch/public/results/25background_experiment/
-parser.add_argument('--out_path', default='/scratch/public/jitter/wt/experiment_results/')
-#train_path- /scratch/public/txt_files/25background_experiment/
-parser.add_argument('--train_path', default='/scratch/public/jitter/wt/experiments/')
+#out_path- /scratch/cek28/results/25background_experiment/
+parser.add_argument('--out_path', default='/scratch/cek28/jitter/wt/experiment_results/')
+#train_path- /scratch/cek28/txt_files/25background_experiment/
+parser.add_argument('--train_path', default='/scratch/cek28/jitter/wt/experiments/')
 parser.add_argument('--experiment')
 parser.add_argument('--experiment_name')
-parser.add_argument('--val_path', default='/scratch/public/jitter/wt/experiments/Test/')
+parser.add_argument('--val_path', default='/scratch/cek28/jitter/wt/experiments/Test/')
 parser.add_argument('--epochs', default='300')
 parser.add_argument('--device')
 parser.add_argument('--supplemental_batch_size', default='0')
@@ -30,7 +30,7 @@ experiment = args.experiment
 experiment_name = args.experiment_name
 supplemental_batch_size =  args.supplemental_batch_size
 
-domains = ["EM", "SW"]
+domains = ["EM", "NW", "SW"]
 
 combinations = list(itertools.product(domains, repeat=2))
 
@@ -42,7 +42,7 @@ combinations = list(itertools.product(domains, repeat=2))
 #reg_combos = list(filter(containsDuplicate, combinations))
 
 def optimalRatioFilter(element):
-  return element[0] != element[1]
+  return element[0] == "NW"
 
 optimal_ratio_combos = list(filter(optimalRatioFilter, combinations))
 
@@ -72,6 +72,8 @@ for combo in optimal_ratio_combos:
 #Could create some variable that does not use every trial
 
 for trial in datasets:
+  print(trial.get_img_txt_val())
+  print(trial.get_lbl_txt_val())
   subprocess.run(['python', 'run_save_train_test.py',
                     '--img_list', trial.get_img_txt(), 
                     '--lbl_list', trial.get_lbl_txt(),

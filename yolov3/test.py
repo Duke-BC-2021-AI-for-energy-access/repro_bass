@@ -1,6 +1,7 @@
 import argparse
 import json
 import numpy
+import os
 
 from torch.utils.data import DataLoader
 
@@ -12,7 +13,7 @@ from utils.utils import *
 def test(cfg,
          data,
          weights=None,
-         batch_size=16,
+         batch_size=8,
          imgsz=416,
          conf_thres=0.001,
          iou_thres=0.6,  # for nms
@@ -21,7 +22,12 @@ def test(cfg,
          augment=False,
          model=None,
          dataloader=None,
-         multi_label=True):
+         multi_label=True,
+         dataroot=None):
+
+    if weights is not None:
+        dataroot = weights[:weights.rfind('/')] # opt.data should be in the form of .../.../.../....data. We only use its parent folder here.
+
     # Initialize/load model and set device
     if model is None:
         is_training = False
@@ -236,7 +242,7 @@ def test(cfg,
                   'See https://github.com/cocodataset/cocoapi/issues/356')
 
 
-    results_file = 'test_results.txt'
+    results_file = dataroot + os.sep + 'test_results.txt'
     # Remove previous results
     try:
         f = open(results_file, 'r+')
@@ -263,8 +269,8 @@ if __name__ == '__main__':
     parser.add_argument('--cfg', type=str, default='cfg/yolov3-spp.cfg', help='*.cfg path')
     parser.add_argument('--data', type=str, default='data/coco2014.data', help='*.data path')
     parser.add_argument('--weights', type=str, default='weights/yolov3-spp-ultralytics.pt', help='weights path')
-    parser.add_argument('--batch-size', type=int, default=16, help='size of each image batch')
-    parser.add_argument('--img-size', type=int, default=512, help='inference size (pixels)')
+    parser.add_argument('--batch-size', type=int, default=8, help='size of each image batch')
+    parser.add_argument('--img-size', type=int, default=608, help='inference size (pixels)')
     parser.add_argument('--conf-thres', type=float, default=0.001, help='object confidence threshold')
     parser.add_argument('--iou-thres', type=float, default=0.6, help='IOU threshold for NMS')
     parser.add_argument('--save-json', action='store_true', help='save a cocoapi-compatible JSON results file')
