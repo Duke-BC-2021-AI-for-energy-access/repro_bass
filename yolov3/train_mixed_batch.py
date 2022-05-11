@@ -1,5 +1,6 @@
 import argparse
 
+import torch
 import torch.distributed as dist
 import torch.optim as optim
 import torch.optim.lr_scheduler as lr_scheduler
@@ -17,10 +18,20 @@ except:
     print('Apex recommended for faster mixed precision training: https://github.com/NVIDIA/apex')
     mixed_precision = False  # not installed
 
-wdir = 'weights' + os.sep  # weights dir
-last = wdir + 'last.pt'
-best = wdir + 'best.pt'
-results_file = 'results.txt'
+# from https://stackoverflow.com/questions/11526975/set-random-seed-programwide-in-python, this seed only needs to be set once in the main program
+import random
+random.seed(1)
+
+
+# gradient_clipping_val = 5
+gradient_clipping_val = None
+
+wdir, last, best, results_file = "", "", "", ""
+
+import sys
+
+def eprint(*args, **kwargs):
+    print(*args, file=sys.stderr, **kwargs)
 
 ###added for mb###
 def infi_loop(dl):
@@ -74,8 +85,10 @@ def train(hyp):
     torch.cuda.empty_cache()
     cfg = opt.cfg
     data = opt.data
-    #batch_size = int(opt.batch_size)
+    batch_size = int(opt.batch_size)
+
     batch_size = 8
+
     epochs = opt.epochs  # 500200 batches at bs 64, 117263 images = 273 epochs
     accumulate = max(round(64 / batch_size), 1)  # accumulate n times before optimizer update (bs 64)
     weights = opt.weights  # initial training weights
@@ -100,12 +113,12 @@ def train(hyp):
         imgsz_min, imgsz_max = int(grid_min * gs), int(grid_max * gs)
     img_size = imgsz_max  # initialize with max size
 
+
     # Configure run
     init_seeds()
     data_dict = parse_data_cfg(data)
     train_path = data_dict['train']
     train_label_path = data_dict['train_label']
-
     ###added for mb###
     synth_path = data_dict['supplement']
     synth_label_path = data_dict['supplement_label']
@@ -250,8 +263,9 @@ def train(hyp):
                                              collate_fn=dataset.collate_fn)
 
     ###added for mb###
+    ### Case when batch_size for synth loader = 1 to avoid 0 batch size error
     synth_dataloader = torch.utils.data.DataLoader(synth_dataset,
-                                                batch_size=supplement_batch_size,
+                                                batch_size=max(1, supplement_batch_size),
                                                 num_workers=nw, 
                                                 shuffle=True, 
                                                 pin_memory=True, 
@@ -288,6 +302,7 @@ def train(hyp):
     ema = torch_utils.ModelEMA(model)
 
     loop_count = (len(dataset) + len(synth_dataset)) // batch_size
+
 
     # Start training
     #nb = len(dataloader)  # number of batches
@@ -327,14 +342,19 @@ def train(hyp):
             if gen_ir_data and gen_synth_data:
                 imgs_ir, targets_ir, paths_ir = next(gen_ir_data)
                 imgs_synth, targets_synth, paths_synth = next(gen_synth_data)
+                
                 mixed_batch_size = batch_size - supplement_batch_size
-
                 for si in reversed(range(mixed_batch_size)):
                     targets_ir[targets_ir[:,0] == si, 0] = supplement_batch_size + si
 
                 imgs = torch.cat([imgs_synth, imgs_ir], dim=0)
                 targets = torch.cat([targets_synth, targets_ir],dim=0)
                 paths = paths_synth + paths_ir
+
+                if supplement_batch_size == 0:
+                    imgs = imgs_ir
+                    targets = targets_ir
+                    paths = paths_ir
 
             ni = i + nb * epoch  # number integrated batches (since train start)
             
@@ -355,7 +375,7 @@ def train(hyp):
 
             # Multi-Scale
             if opt.multi_scale:
-                if ni / accumulate % 1 == 0:  #  adjust img_size (67% - 150%) every 1 batch
+                if ni / accumulate % 1 == 0:  #  adjust img_size (67% - 150%) every 1 batch
                     img_size = random.randrange(grid_min, grid_max + 1) * gs
                 sf = img_size / max(imgs.shape[2:])  # scale factor
                 if sf != 1:
@@ -367,6 +387,7 @@ def train(hyp):
 
             # Loss
             loss, loss_items = compute_loss(pred, targets, model)
+
             if not torch.isfinite(loss):
                 print('WARNING: non-finite loss, ending training ', loss_items)
                 return results
@@ -378,6 +399,10 @@ def train(hyp):
                     scaled_loss.backward()
             else:
                 loss.backward()
+
+
+            if gradient_clipping_val is not None:
+                torch.nn.utils.clip_grad_value_(model.parameters(), gradient_clipping_val)
 
             # Optimize
             if ni % accumulate == 0:
@@ -417,7 +442,9 @@ def train(hyp):
                                       save_json=final_epoch and is_coco,
                                       single_cls=opt.single_cls,
                                       dataloader=testloader,
-                                      multi_label=ni > n_burn)
+                                      multi_label=ni > n_burn,
+                                      dataroot=dataroot,
+                                      weights=dataroot + os.sep + 'weights/last.pt') #TODO
 
         # Write
         with open(results_file, 'a') as f:
@@ -505,6 +532,17 @@ if __name__ == '__main__':
     opt.data = check_file(opt.data)  # check file
     print(opt)
     opt.img_size.extend([opt.img_size[-1]] * (3 - len(opt.img_size)))  # extend to 3 sizes (min, max, test)
+
+    # initialize weights directories
+    # global wdir, last, best, results_file
+    dataroot = opt.data[:opt.data.rfind('/')] # opt.data should be in the form of .../.../.../....data. We only use its parent folder here.
+    wdir = dataroot + os.sep + 'weights' + os.sep  # weights dir DONE prefix it with experiment name
+    os.system(f'mkdir -p "{wdir}"')
+    last = wdir + 'last.pt'
+    best = wdir + 'best.pt'
+    results_file = wdir + 'results.txt'
+
+
     device = torch_utils.select_device(opt.device, apex=mixed_precision, batch_size=opt.batch_size)
     if device.type == 'cpu':
         mixed_precision = False

@@ -17,10 +17,10 @@ except:
     print('Apex recommended for faster mixed precision training: https://github.com/NVIDIA/apex')
     mixed_precision = False  # not installed
 
-wdir = 'weights' + os.sep  # weights dir
-last = wdir + 'last.pt'
-best = wdir + 'best.pt'
-results_file = 'results.txt'
+# wdir = 'weights' + os.sep  # weights dir
+# last = wdir + 'last.pt'
+# best = wdir + 'best.pt'
+# results_file = 'results.txt'
 
 # Hyperparameters
 hyp = {'giou': 3.54,  # giou loss gain
@@ -324,6 +324,7 @@ def train(hyp):
         final_epoch = epoch + 1 == epochs
         if not opt.notest or final_epoch:  # Calculate mAP
             is_coco = any([x in data for x in ['coco.data', 'coco2014.data', 'coco2017.data']]) and model.nc == 80
+            print(f'CHECKING WEIGHTS IN TRAIN: {opt.weights}')
             results, maps = test.test(cfg,
                                       data,
                                       batch_size=batch_size,
@@ -332,7 +333,8 @@ def train(hyp):
                                       save_json=final_epoch and is_coco,
                                       single_cls=opt.single_cls,
                                       dataloader=testloader,
-                                      multi_label=ni > n_burn)
+                                      multi_label=ni > n_burn,
+                                      weights=opt.out_root + 'weights/last.pt')
 
         # Write
         with open(results_file, 'a') as f:
@@ -394,7 +396,7 @@ def train(hyp):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--epochs', type=int, default=300)  # 500200 batches at bs 16, 117263 COCO images = 273 epochs
-    parser.add_argument('--batch-size', type=int, default=16)  # effective bs = batch_size * accumulate = 16 * 4 = 64
+    parser.add_argument('--batch-size', type=int, default=8)  # effective bs = batch_size * accumulate = 16 * 4 = 64
     parser.add_argument('--cfg', type=str, default='cfg/yolov3-spp.cfg', help='*.cfg path')
     parser.add_argument('--data', type=str, default='data/coco2017.data', help='*.data path')
     parser.add_argument('--multi-scale', action='store_true', help='adjust (67%% - 150%%) img_size every 10 batches')
@@ -412,8 +414,10 @@ if __name__ == '__main__':
     parser.add_argument('--adam', action='store_true', help='use adam optimizer')
     parser.add_argument('--single-cls', action='store_true', help='train as single-class dataset')
     parser.add_argument('--freeze-layers', action='store_true', help='Freeze non-output layers')
+    parser.add_argument('--out_root', default='', help='out root to write experimental results to')
     opt = parser.parse_args()
     opt.weights = last if opt.resume and not opt.weights else opt.weights
+
     # check_git_status()
     opt.cfg = check_file(opt.cfg)  # check file
     opt.data = check_file(opt.data)  # check file
@@ -422,6 +426,18 @@ if __name__ == '__main__':
     device = torch_utils.select_device(opt.device, apex=mixed_precision, batch_size=opt.batch_size)
     if device.type == 'cpu':
         mixed_precision = False
+
+    # initialize weights directories
+    # global wdir, last, best, results_file
+    dataroot = opt.data[:opt.data.rfind('/')] # opt.data should be in the form of .../.../.../....data. We only use its parent folder here.
+    print("RUNNING: TRAIN.PY")
+    print(dataroot)
+    wdir = dataroot + os.sep + 'weights' + os.sep  # weights dir DONE prefix it with experiment name
+    print(wdir)
+    os.system(f'mkdir -p "{wdir}"')
+    last = wdir + 'last.pt'
+    best = wdir + 'best.pt'
+    results_file = wdir + 'results.txt'
 
     # scale hyp['obj'] by img_size (evolved at 320)
     # hyp['obj'] *= opt.img_size[0] / 320.

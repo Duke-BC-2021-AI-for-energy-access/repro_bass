@@ -50,6 +50,7 @@ def make_data_file(out_root, img_list, lbl_list, version, img_list_val, lbl_list
 
 
 def run_train(out_root, epochs, device, supplement_batch_size, baseline_boolean):
+    print(f"BASELINE BOOLEAN: {baseline_boolean}")
     if baseline_boolean:
         subprocess.run(['python', 'train.py',                                                    # train gp_gan
                         '--cfg', './cfg/yolov3-spp.cfg',
@@ -57,7 +58,8 @@ def run_train(out_root, epochs, device, supplement_batch_size, baseline_boolean)
                         '--img-size', '608',
                         '--epochs', epochs,
                         '--batch-size', '8',
-                        '--device', device])
+                        '--device', device,
+                        '--out_root', out_root])
     else:
         subprocess.run(['python', 'train_mixed_batch.py',                                                    # train gp_gan
                         '--cfg', './cfg/yolov3-spp.cfg',
@@ -71,6 +73,7 @@ def run_train(out_root, epochs, device, supplement_batch_size, baseline_boolean)
 
 
 def run_test(out_root, device):
+    print(f'CHECKING OUT ROOT BEFORE TEST.PY: {out_root}')
     subprocess.run(['python', 'test.py',                                                    # test gp_gan
                     '--cfg', './cfg/yolov3-spp.cfg',
                     '--data', out_root + 'train_data_' + version + '.data',
@@ -83,8 +86,9 @@ def copy_outputs(out_root, version):
     if not os.path.exists(out_root + version + '_outputs/'):                                                                    # make root dir
         os.makedirs(out_root + version + '_outputs/')
 
-    file_names = ['PR_curve.png', 'precision.txt', 'recall.txt', 'results.png', 'results.txt', 'test_batch0_gt.jpg', 'test_batch0_pred.jpg', 'train_batch0.jpg', 'test_results.txt', 'ious.txt']
-    file_names.extend((out_root + 'weights/best.pt', out_root + 'weights/last.pt'))
+    #file_names = ['PR_curve.png', 'precision.txt', 'recall.txt', 'results.png', 'results.txt', 'test_batch0_gt.jpg', 'test_batch0_pred.jpg', 'train_batch0.jpg', 'test_results.txt', 'ious.txt']
+    file_names = ['PR_curve.png', 'precision.txt', 'recall.txt', 'results.png', 'test_batch0_gt.jpg', 'test_batch0_pred.jpg', 'train_batch0.jpg', 'test_results.txt', 'ious.txt']
+    #file_names.extend((out_root + 'weights/best.pt', out_root + 'weights/last.pt'))
     for file in file_names:
         # SWITCH
         # shutil.copy2('/hdd/dataplus2021/whtest/repro_bass_300/yolov3/' + file, out_root + version + '_outputs/')
@@ -104,6 +108,7 @@ device = opt.device
 img_list_supplement = opt.img_list_supplement
 lbl_list_supplement = opt.lbl_list_supplement
 supplement_batch_size = opt.supplement_batch_size
+print(f"CHECKING EXPERIMENT = BASELINE: experiment -- {opt.experiment}")
 baseline_boolean = opt.experiment == "Baseline"
 
 def main(img_list, lbl_list, out_root, epochs, version, device, img_list_supplement, lbl_list_supplement, supplement_batch_size, baseline_boolean):
