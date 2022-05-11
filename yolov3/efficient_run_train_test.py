@@ -70,7 +70,7 @@ for src, dst in combinations:
                   img_txt_val=val_path+'{dst}_Images.txt',
                   lbl_txt_val=val_path+'{dst}_Labels.txt',
                   img_txt_supplement='',
-                  lbl_txt_supplement='')""".format(src=src,dst=dst,i=i)
+                  lbl_txt_supplement='')""".format(src=src,dst=dst,i=num)
     datasets.append(eval(dataset_string))
 
 for trial in datasets:

@@ -21,7 +21,7 @@ except:
 # from https://stackoverflow.com/questions/11526975/set-random-seed-programwide-in-python, this seed only needs to be set once in the main program
 import random
 random.seed(1)
-
+ 
 
 # gradient_clipping_val = 5
 gradient_clipping_val = None
