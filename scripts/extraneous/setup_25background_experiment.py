@@ -15,22 +15,22 @@ reg_dict = {
 }
 
 
-#os.mkdir('/scratch/public/txt_files/25background_experiment/')
+#os.mkdir('/scratch/cek28/txt_files/25background_experiment/')
 
-#empty_folder = "/scratch/public/txt_files/empty_txt_files/"
+#empty_folder = "/scratch/cek28/txt_files/empty_txt_files/"
 #os.mkdir(empty_folder)
 
 hdd_string_to_replace = "/hdd/dataplus2021/share/"
-replacer_string = "/scratch/public/"
+replacer_string = "/scratch/cek28/"
 
-input_directories = ["/scratch/public/txt_files/domain_txt_files2/", "/scratch/public/txt_files/MW_txt_files/"]
+input_directories = ["/scratch/cek28/txt_files/domain_txt_files2/", "/scratch/cek28/txt_files/MW_txt_files/"]
 
 #background_dir = "/scratch/dataplus2021/repro_bass_300/domain_experiment/BC_team_domain_experiment/background_by_domain/"
-background_dir = "/scratch/public/domain_experiment/BC_team_domain_experiment/background_by_domain/"
-MW_background_dir = "/scratch/public/MW_images/train_background_cropped/"
+background_dir = "/scratch/cek28/domain_experiment/BC_team_domain_experiment/background_by_domain/"
+MW_background_dir = "/scratch/cek28/MW_images/train_background_cropped/"
 
 
-output_dir = "/scratch/public/txt_files/25background_experiment/"
+output_dir = "/scratch/cek28/txt_files/25background_experiment/"
 
 img_txt_files = []
 

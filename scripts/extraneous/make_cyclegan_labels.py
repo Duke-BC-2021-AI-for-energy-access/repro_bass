@@ -16,9 +16,9 @@ reg_dict = {
         "/images": "/labels"
 }
 
-cycle_dir = "/scratch/public/cyclegan-output/images/"
+cycle_dir = "/scratch/cek28/cyclegan-output/images/"
 
-labels_dir = "/scratch/public/domain_experiment/BC_team_domain_experiment/data/labels/"
+labels_dir = "/scratch/cek28/domain_experiment/BC_team_domain_experiment/data/labels/"
 
 all_labels = glob.glob(labels_dir+ "*.txt")
 

@@ -27,7 +27,7 @@ results_dir = "/home/fcw/MW_txt_files/"
 random.seed(42)
 
 ####DOMAIN TO SAMPLE FROM
-MW_dir = "/scratch/public/experimental_output_ratio_MW"
+MW_dir = "/scratch/cek28/experimental_output_ratio_MW"
 all_MW_imgs = glob.glob(MW_dir + "/**/*.jpg", recursive = True)
 
 ####Directory with txt files for within domain of other domains
@@ -59,7 +59,7 @@ MW_combos = list(filter(containsMW, combinations))
 #Depends on random seed
 
 #Gets 100 real images
-MW_real_dir = "/scratch/public/MW_images/0m_train_cropped/"
+MW_real_dir = "/scratch/cek28/MW_images/0m_train_cropped/"
 MW_real_imgs = glob.glob(MW_real_dir + "*.jpg")
 
 #Gets 75 synthetic images

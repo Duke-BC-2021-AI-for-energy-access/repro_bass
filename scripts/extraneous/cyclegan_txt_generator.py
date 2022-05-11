@@ -14,11 +14,11 @@ def multiple_replace(dict, text):
   return regex.sub(lambda mo: dict[mo.string[mo.start():mo.end()]], text) 
 
 
-cycle_dir = "/scratch/public/cyclegan-output/"
+cycle_dir = "/scratch/cek28/cyclegan-output/"
 
 txt_files_dir = "/home/fcw/updated_txt_files/"
 
-output_dir = "/scratch/public/txt_files/cyclegan_txt_files/"
+output_dir = "/scratch/cek28/txt_files/cyclegan_txt_files/"
 
 if not os.path.exists(output_dir):
     os.makedirs(output_dir)

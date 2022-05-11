@@ -30,11 +30,11 @@ def plot_one_box(x_ctrs, y_ctrs, widths, heights, img, fname, color=None, label=
   #Save file
   cv2.imwrite(fname, img)
 
-shadow_lbl_dir = "/scratch/public/jitter/wt/labels/EM/Real_Shadow/"
+shadow_lbl_dir = "/scratch/cek28/jitter/wt/labels/EM/Real_Shadow/"
 
-lbl_dir = "/scratch/public/jitter/wt/labels/EM/Real/"
+lbl_dir = "/scratch/cek28/jitter/wt/labels/EM/Real/"
 
-img_directory = "/scratch/public/images_for_shadow/EM/"
+img_directory = "/scratch/cek28/images_for_shadow/EM/"
 
 all_images = glob.glob(img_directory + "*.jpg")
 

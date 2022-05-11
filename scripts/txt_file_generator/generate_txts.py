@@ -11,22 +11,22 @@ from shutil import copyfile
 
 parser = argparse.ArgumentParser(description='YOLO txt file generator for imgs and lbls')
 
-parser.add_argument('--domains_file', type=str, default='/scratch/public/scripts/domains.txt', help='file holding domains to be used')
+parser.add_argument('--domains_file', type=str, default='/scratch/cek28/scripts/domains.txt', help='file holding domains to be used')
 parser.add_argument('--txt_files_dir', type=str, default='/home/fcw/updated_txt_files_2/', help='directory holding txt files')
-parser.add_argument('--results_dir', type=str, default='/scratch/public/txt_files_test/', help='directory to output txt files to')
+parser.add_argument('--results_dir', type=str, default='/scratch/cek28/txt_files_test/', help='directory to output txt files to')
 
 parser.add_argument('--new_domain', type=str, default='MW', help='new domain to add')
-parser.add_argument('--new_domain_real_dir', type=str, default='/scratch/public/MW_images/0m_train_cropped/', help='new domain to add')
-parser.add_argument('--new_domain_synth_dir', type=str, default='/scratch/public/experimental_output_ratio_MW/', help='new domain to add')
+parser.add_argument('--new_domain_real_dir', type=str, default='/scratch/cek28/MW_images/0m_train_cropped/', help='new domain to add')
+parser.add_argument('--new_domain_synth_dir', type=str, default='/scratch/cek28/experimental_output_ratio_MW/', help='new domain to add')
 
-parser.add_argument('--new_synth_dir', type=str, default='/scratch/public/unused/', help='directory holding 75 extra images to sample (each domain)')
+parser.add_argument('--new_synth_dir', type=str, default='/scratch/cek28/unused/', help='directory holding 75 extra images to sample (each domain)')
 
 
 args = parser.parse_args()
 
 txt_files_dir = args.txt_files_dir
 ###NEED TO CHANGE TO EXPERIMENT
-#pass in experiment directory (e.g. /scratch/public/frankie_repro_bass/domain_experiment/BC_team_domain_experiment)
+#pass in experiment directory (e.g. /scratch/cek28/frankie_repro_bass/domain_experiment/BC_team_domain_experiment)
 results_dir = args.results_dir
 domain = args.new_domain
 domain_real_dir = args.new_domain_real_dir

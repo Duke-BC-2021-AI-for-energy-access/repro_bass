@@ -157,7 +157,7 @@ def create_a_file(real, synth, real_files, synth_files, train_or_val, img_or_lbl
     #If val, don't write synthetic, or pass synthetic as none
     #if statement
     
-    #pass in experiment directory (e.g. /scratch/public/frankie_repro_bass/domain_experiment/BC_team_domain_experiment)
+    #pass in experiment directory (e.g. /scratch/cek28/frankie_repro_bass/domain_experiment/BC_team_domain_experiment)
     
     fname = "{train_or_val}_{img_or_lbl}_paths.txt".format(train_or_val=train_or_val, img_or_lbl=img_or_lbl)
     output_directory = "{exper_dir}/Train {real} Val {synth} 100 real 75 syn/".format(exper_dir=exper_dir,real=real,synth=synth)

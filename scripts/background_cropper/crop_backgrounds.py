@@ -7,21 +7,21 @@ parser = argparse.ArgumentParser(description='Cropper for background images to 6
 parser.add_argument('--crop_flag', type=str, default='middle', help='new domain to add')
 parser.add_argument('--new_width', type=int, default=608, help='new domain to add')
 parser.add_argument('--new_height', type=int, default=608, help='new domain to add')
-parser.add_argument('--input_dir', type=str, default="/scratch/public/MW_images/0m_train/", help='new domain to add')
-parser.add_argument('--output_dir', type=str, default="/scratch/public/MW_images/0m_train_cropped/", help='new domain to add')
+parser.add_argument('--input_dir', type=str, default="/scratch/cek28/MW_images/0m_train/", help='new domain to add')
+parser.add_argument('--output_dir', type=str, default="/scratch/cek28/MW_images/0m_train_cropped/", help='new domain to add')
 
 args = parser.parse_args()
 crop_flag = args.crop_flag
 new_width = args.new_width
 new_height = args.new_height
 
-#img_directory = "/scratch/public/MW_images/train_background/"
+#img_directory = "/scratch/cek28/MW_images/train_background/"
 img_directory = args.input_dir
 results_dir = args.output_dir
 
 all_imgs = glob.glob(img_directory + "*.jpg")
 
-#results_dir ="/scratch/public/MW_images/train_background_cropped/"
+#results_dir ="/scratch/cek28/MW_images/train_background_cropped/"
 
 
 if not os.path.exists(results_dir):

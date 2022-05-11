@@ -115,8 +115,6 @@ baseline_boolean = opt.experiment == "Baseline"
 def main(img_list, lbl_list, out_root, epochs, version, device, img_list_supplement, lbl_list_supplement, supplement_batch_size, baseline_boolean):
     make_data_file(out_root, img_list, lbl_list, version, img_list_val, lbl_list_val, img_list_supplement, lbl_list_supplement, baseline_boolean)
     print("Made .data file\n")
-    # print((out_root, img_list, lbl_list, version, img_list_val, lbl_list_val))
-    # raise Exception
 
     #Change back
     run_train(out_root, epochs, device, supplement_batch_size, baseline_boolean)

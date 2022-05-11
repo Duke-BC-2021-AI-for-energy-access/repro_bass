@@ -5,7 +5,7 @@ from matplotlib import pyplot as plt
 import numpy as np
 
 lbl_directory = "/scratch/dataplus2021/data/labels/"
-output_directory = "/scratch/public/distributions/"
+output_directory = "/scratch/cek28/distributions/"
 
 def plot_histogram(arr, title, output_directory, fig_num, bins):
     """[summary]

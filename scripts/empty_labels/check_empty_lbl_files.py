@@ -2,7 +2,7 @@ import os
 import glob
 
 domains = ["EM", "NE", "MW", "NW", "SW"]
-label_dir = "/scratch/public/jitter/wt/labels/"
+label_dir = "/scratch/cek28/jitter/wt/labels/"
 actions = ["Test", "Real"]
 output_file = "/home/fcw/no_lbls.txt"
 

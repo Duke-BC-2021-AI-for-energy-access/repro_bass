@@ -56,12 +56,12 @@ def multiple_replace(dict, text):
 
 ##################CHANGE
 #Folder that holds images and txt files
-#my_txt_dir = "/scratch/public/MW_images/test_cropped_annotated/"
-#my_img_dir = "/scratch/public/MW_images/0m_test_cropped/"
+#my_txt_dir = "/scratch/cek28/MW_images/test_cropped_annotated/"
+#my_img_dir = "/scratch/cek28/MW_images/0m_test_cropped/"
 
 ##################CHANGE
 #Output directory
-#results_dir = "/scratch/public/scripts/bbox_test2/"
+#results_dir = "/scratch/cek28/scripts/bbox_test2/"
 
 def create_boxes(txts, imgs, results_dir, dir_or_file):
   """

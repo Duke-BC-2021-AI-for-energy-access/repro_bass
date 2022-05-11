@@ -8,7 +8,7 @@ import os
 ##ARGUMENTS
 domains = ["EM", "MW", "SW", "NW", "NE"]
 txt_files_dir = "/home/fcw/updated_txt_files_2/"
-output_folder = "/scratch/public/images/"
+output_folder = "/scratch/cek28/images/"
 
 _, __, synth_imgs, synth_lbls = readDomains(domains, txt_files_dir, None)
 

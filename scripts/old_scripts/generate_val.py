@@ -9,7 +9,7 @@ def multiple_replace(string, rep_dict):
     return pattern.sub(lambda x: rep_dict[x.group(0)], string)
 
 #####CHANGE- file to source imgs and labels from
-val_lbls_dir = "/scratch/public/MW_images/test_cropped_annotated/"
+val_lbls_dir = "/scratch/cek28/MW_images/test_cropped_annotated/"
 all_val_lbls = glob.glob(val_lbls_dir + "*.txt")
 
 reg_dict = {

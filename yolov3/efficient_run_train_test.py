@@ -9,7 +9,7 @@ repo_path = os.path.expanduser(f"~{pwd.getpwuid(os.geteuid())[0]}/") + 'repro_ba
 
 parser = argparse.ArgumentParser()
 
-parser.add_argument('--out_path', default='/scratch/cek28/jitter/wt/baseline_reruns/Reruns/')
+parser.add_argument('--out_path', default='/scratch/cek28/jitter/wt/experiment_results/')
 parser.add_argument('--train_path', default='/scratch/cek28/jitter/wt/experiments/')
 parser.add_argument('--experiment')
 parser.add_argument('--experiment_name')
@@ -62,7 +62,7 @@ for src, dst in combinations:
                         img_txt_val=val_path+'{dst}_Images.txt',
                         lbl_txt_val=val_path+'{dst}_Labels.txt',
                         img_txt_supplement=experiment_path+'Train_{src}_Test_{dst}_Supplement_Images.txt',
-                        lbl_txt_supplement=experiment_path+'Train_{src}_Test_{dst}_Supplement_Labels.txt')""".format(src=src,dst=dst,i=num)
+                        lbl_txt_supplement=experiment_path+'Train_{src}_Test_{dst}_Supplement_Labels.txt')""".format(src=src,dst=dst,num=num)
     else:
       dataset_string = """Dataset(img_txt=experiment_path+'Train_{src}_Test_{dst}_Images.txt',
                   lbl_txt=experiment_path+'Train_{src}_Test_{dst}_Labels.txt',
@@ -70,7 +70,7 @@ for src, dst in combinations:
                   img_txt_val=val_path+'{dst}_Images.txt',
                   lbl_txt_val=val_path+'{dst}_Labels.txt',
                   img_txt_supplement='',
-                  lbl_txt_supplement='')""".format(src=src,dst=dst,i=num)
+                  lbl_txt_supplement='')""".format(src=src,dst=dst,num=num)
     datasets.append(eval(dataset_string))
 
 for trial in datasets:

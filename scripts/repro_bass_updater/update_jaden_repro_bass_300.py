@@ -18,7 +18,7 @@ def update(home_repro):
     """
 
     reg_dict = {
-        "/scratch/public/jaden_repro_bass/": home_repro
+        "/scratch/cek28/jaden_repro_bass/": home_repro
     }
 
     directory = home_repro + "domain_experiment/BC_team_domain_experiment/"

@@ -3,7 +3,7 @@ import os
 from retrieve_maps import retrieve
 
 #directory holding experimental outputs
-directory = "/scratch/public/results/cyclegan/"
+directory = "/scratch/cek28/results/cyclegan/"
 
 #Will likely stay some- specified in run save train test py
 version = "v2"

@@ -30,7 +30,7 @@ reg_dict = {
     ".jpg": ".txt"
 }
 
-domain_file = "/scratch/public/jitter/wt/domain_overview.json"
+domain_file = "/scratch/cek28/jitter/wt/domain_overview.json"
 
 flexibility = 10
 
@@ -38,20 +38,20 @@ domains = ["EM", "SW", "NW"]
 
 for domain in domains:
 
-    shadow_lbl_dir = f"/scratch/public/jitter/wt/labels/{domain}/Real_Shadow/"
+    shadow_lbl_dir = f"/scratch/cek28/jitter/wt/labels/{domain}/Real_Shadow/"
 
-    lbl_dir = f"/scratch/public/jitter/wt/labels/{domain}/Real/"
+    lbl_dir = f"/scratch/cek28/jitter/wt/labels/{domain}/Real/"
 
-    #img_directory = "/scratch/public/images_for_shadow/EM/"
+    #img_directory = "/scratch/cek28/images_for_shadow/EM/"
 
     with open(domain_file, "r") as f:
         data = json.load(f)
         all_fnames = data[domain]['Real'][:100]
     
-    all_images = [f"/scratch/public/jitter/wt/images/{domain}/Real/{fname}.jpg" for fname in all_fnames]
+    all_images = [f"/scratch/cek28/jitter/wt/images/{domain}/Real/{fname}.jpg" for fname in all_fnames]
     #all_images = glob.glob(img_directory + "*.jpg")
 
-    new_cropped_directory = f"/scratch/public/new_cropped_turbines/images/{domain}/"
+    new_cropped_directory = f"/scratch/cek28/new_cropped_turbines/images/{domain}/"
 
     if not os.path.exists(new_cropped_directory):
         os.makedirs(new_cropped_directory)
@@ -62,7 +62,7 @@ for domain in domains:
     shadow_total = 0
     total_matches = 0
 
-    #all_images = ["/scratch/public/images_for_shadow/EM/EM_16877.jpg"]
+    #all_images = ["/scratch/cek28/images_for_shadow/EM/EM_16877.jpg"]
 
     for img_name in all_images:
         #print(img_name)

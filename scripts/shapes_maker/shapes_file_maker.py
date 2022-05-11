@@ -1,6 +1,6 @@
 import glob
 
-baseline_files = glob.glob("/scratch/public/txt_files/25background_experiment/*.txt")
+baseline_files = glob.glob("/scratch/cek28/txt_files/25background_experiment/*.txt")
 
 img_files = [x for x in baseline_files if "img" in x]
 
