@@ -9,10 +9,7 @@ repo_path = os.path.expanduser(f"~{pwd.getpwuid(os.geteuid())[0]}/") + 'repro_ba
 
 parser = argparse.ArgumentParser()
 
-#os.path.expanduser(f"~{pwd.getpwuid(os.geteuid())[0]}/")+'MW_batch_size_8/'
-#out_path- /scratch/cek28/results/25background_experiment/
 parser.add_argument('--out_path', default='/scratch/cek28/jitter/wt/baseline_reruns/Reruns/')
-#train_path- /scratch/cek28/txt_files/25background_experiment/
 parser.add_argument('--train_path', default='/scratch/cek28/jitter/wt/experiments/')
 parser.add_argument('--experiment')
 parser.add_argument('--experiment_name')
@@ -42,42 +39,39 @@ combinations = list(itertools.product(domains, repeat=2))
 
 #optimal_ratio_combos = list(filter(optimalRatioFilter, combinations))
 
-
-#optimal_ratio_combos = list(itertools.product(domains, domains, trials))
-
 experiment_path = os.path.join(train_path, experiment + "/")
-experiment_out_path = os.path.join(out_path, experiment_name + "/")
-
 datasets = []
-#for combo in optimal_ratio_combos:
-#  print(combo)
-#  for i in range(0,4):
-#    if not experiment == "Baseline":
-
 combinations = list(itertools.product(domains, domains))
-#combinations = [("SW", "SW", 0), ("SW", "SW", 1)]
 
+# iterate through domain combinations
 for src, dst in combinations:
-  i = 1
-  if not experiment == "Baseline":
-    dataset_string = """Dataset(img_txt=experiment_path+'Train_{src}_Test_{dst}_Images.txt',
-                      lbl_txt=experiment_path+'Train_{src}_Test_{dst}_Labels.txt',
-                      out_dir=experiment_out_path+'t_{src}_v_{dst}_{i}/',
-                      img_txt_val=val_path+'{dst}_Images.txt',
-                      lbl_txt_val=val_path+'{dst}_Labels.txt',
-                      img_txt_supplement=experiment_path+'Train_{src}_Test_{dst}_Supplement_Images.txt',
-                      lbl_txt_supplement=experiment_path+'Train_{src}_Test_{dst}_Supplement_Labels.txt')""".format(src=src,dst=dst,i=i)
-  else:
-    dataset_string = """Dataset(img_txt=experiment_path+'Train_{src}_Test_{dst}_Images.txt',
-                lbl_txt=experiment_path+'Train_{src}_Test_{dst}_Labels.txt',
-                out_dir=experiment_out_path+'t_{src}_v_{dst}_{i}/',
-                img_txt_val=val_path+'{dst}_Images.txt',
-                lbl_txt_val=val_path+'{dst}_Labels.txt',
-                img_txt_supplement='',
-                lbl_txt_supplement='')""".format(src=src,dst=dst,i=i)
-  datasets.append(eval(dataset_string))
+  # iterate through trials
+  for i in range(4):
+    # case when trial vs rerun trial (after 4 runs)
+    if i <= 3:
+      num = i
+      experiment_out_path = os.path.join(out_path, experiment_name + "/")
+    else:
+      num = i - 4
+      experiment_out_path = os.path.join(out_path, experiment_name, "Reruns/")
 
-#Could create some variable that does not use every trial
+    if not experiment == "Baseline":
+      dataset_string = """Dataset(img_txt=experiment_path+'Train_{src}_Test_{dst}_Images.txt',
+                        lbl_txt=experiment_path+'Train_{src}_Test_{dst}_Labels.txt',
+                        out_dir=experiment_out_path+'t_{src}_v_{dst}_{num}/',
+                        img_txt_val=val_path+'{dst}_Images.txt',
+                        lbl_txt_val=val_path+'{dst}_Labels.txt',
+                        img_txt_supplement=experiment_path+'Train_{src}_Test_{dst}_Supplement_Images.txt',
+                        lbl_txt_supplement=experiment_path+'Train_{src}_Test_{dst}_Supplement_Labels.txt')""".format(src=src,dst=dst,i=num)
+    else:
+      dataset_string = """Dataset(img_txt=experiment_path+'Train_{src}_Test_{dst}_Images.txt',
+                  lbl_txt=experiment_path+'Train_{src}_Test_{dst}_Labels.txt',
+                  out_dir=experiment_out_path+'t_{src}_v_{dst}_{num}/',
+                  img_txt_val=val_path+'{dst}_Images.txt',
+                  lbl_txt_val=val_path+'{dst}_Labels.txt',
+                  img_txt_supplement='',
+                  lbl_txt_supplement='')""".format(src=src,dst=dst,i=i)
+    datasets.append(eval(dataset_string))
 
 for trial in datasets:
   print(trial.get_img_txt_val())
