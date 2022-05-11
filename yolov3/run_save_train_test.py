@@ -86,8 +86,9 @@ def copy_outputs(out_root, version):
     if not os.path.exists(out_root + version + '_outputs/'):                                                                    # make root dir
         os.makedirs(out_root + version + '_outputs/')
 
+    # only copy files we want for mixed batch training
     #file_names = ['PR_curve.png', 'precision.txt', 'recall.txt', 'results.png', 'results.txt', 'test_batch0_gt.jpg', 'test_batch0_pred.jpg', 'train_batch0.jpg', 'test_results.txt', 'ious.txt']
-    file_names = ['PR_curve.png', 'precision.txt', 'recall.txt', 'results.png', 'test_batch0_gt.jpg', 'test_batch0_pred.jpg', 'train_batch0.jpg', 'test_results.txt', 'ious.txt']
+    file_names = ['PR_curve.png', 'precision.txt', 'recall.txt', 'results.png', 'test_batch0_gt.jpg', 'test_batch0_pred.jpg', 'test_results.txt', 'ious.txt']
     #file_names.extend((out_root + 'weights/best.pt', out_root + 'weights/last.pt'))
     for file in file_names:
         # SWITCH
