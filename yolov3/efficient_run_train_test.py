@@ -42,36 +42,39 @@ combinations = list(itertools.product(domains, repeat=2))
 experiment_path = os.path.join(train_path, experiment + "/")
 datasets = []
 combinations = list(itertools.product(domains, domains))
+combinations = [("SW", "SW", 0), ("SW", "SW", 1)]
+
 
 # iterate through domain combinations
-for src, dst in combinations:
+for src, dst, i in combinations:
   # iterate through trials
-  for i in range(4):
+  #for i in range(2):
+  
     # case when trial vs rerun trial (after 4 runs)
-    if i <= 3:
-      num = i
-      experiment_out_path = os.path.join(out_path, experiment_name + "/")
-    else:
-      num = i - 4
-      experiment_out_path = os.path.join(out_path, experiment_name, "Reruns/")
+  if i <= 3:
+    num = i
+    experiment_out_path = os.path.join(out_path, experiment_name + "/")
+  else:
+    num = i - 4
+    experiment_out_path = os.path.join(out_path, "Reruns", experiment_name + "/",)
 
-    if not experiment == "Baseline":
-      dataset_string = """Dataset(img_txt=experiment_path+'Train_{src}_Test_{dst}_Images.txt',
-                        lbl_txt=experiment_path+'Train_{src}_Test_{dst}_Labels.txt',
-                        out_dir=experiment_out_path+'t_{src}_v_{dst}_{num}/',
-                        img_txt_val=val_path+'{dst}_Images.txt',
-                        lbl_txt_val=val_path+'{dst}_Labels.txt',
-                        img_txt_supplement=experiment_path+'Train_{src}_Test_{dst}_Supplement_Images.txt',
-                        lbl_txt_supplement=experiment_path+'Train_{src}_Test_{dst}_Supplement_Labels.txt')""".format(src=src,dst=dst,num=num)
-    else:
-      dataset_string = """Dataset(img_txt=experiment_path+'Train_{src}_Test_{dst}_Images.txt',
-                  lbl_txt=experiment_path+'Train_{src}_Test_{dst}_Labels.txt',
-                  out_dir=experiment_out_path+'t_{src}_v_{dst}_{num}/',
-                  img_txt_val=val_path+'{dst}_Images.txt',
-                  lbl_txt_val=val_path+'{dst}_Labels.txt',
-                  img_txt_supplement='',
-                  lbl_txt_supplement='')""".format(src=src,dst=dst,num=num)
-    datasets.append(eval(dataset_string))
+  if not experiment == "Baseline":
+    dataset_string = """Dataset(img_txt=experiment_path+'Train_{src}_Test_{dst}_Images.txt',
+                      lbl_txt=experiment_path+'Train_{src}_Test_{dst}_Labels.txt',
+                      out_dir=experiment_out_path+'t_{src}_v_{dst}_{num}/',
+                      img_txt_val=val_path+'{dst}_Images.txt',
+                      lbl_txt_val=val_path+'{dst}_Labels.txt',
+                      img_txt_supplement=experiment_path+'Train_{src}_Test_{dst}_Supplement_Images.txt',
+                      lbl_txt_supplement=experiment_path+'Train_{src}_Test_{dst}_Supplement_Labels.txt')""".format(src=src,dst=dst,num=num)
+  else:
+    dataset_string = """Dataset(img_txt=experiment_path+'Train_{src}_Test_{dst}_Images.txt',
+                lbl_txt=experiment_path+'Train_{src}_Test_{dst}_Labels.txt',
+                out_dir=experiment_out_path+'t_{src}_v_{dst}_{num}/',
+                img_txt_val=val_path+'{dst}_Images.txt',
+                lbl_txt_val=val_path+'{dst}_Labels.txt',
+                img_txt_supplement='',
+                lbl_txt_supplement='')""".format(src=src,dst=dst,num=num)
+  datasets.append(eval(dataset_string))
 
 for trial in datasets:
   print(trial.get_img_txt_val())
