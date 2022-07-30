@@ -248,7 +248,7 @@ def train(hyp):
     synth_dataset = LoadImagesAndLabels(synth_path, synth_label_path, img_size, batch_size,
                                     augment=True,
                                     hyp=hyp, 
-                                    rect=False, 
+                                    rect=opt.rect, 
                                     cache_images=opt.cache_images,
                                     single_cls=opt.single_cls)
 
@@ -256,9 +256,9 @@ def train(hyp):
     batch_size = min(batch_size, len(dataset))
     nw = min([os.cpu_count(), batch_size if batch_size > 1 else 0, 8])  # number of workers
     dataloader = torch.utils.data.DataLoader(dataset,
-                                             batch_size=batch_size,
+                                             batch_size=max(1, 8 - supplement_batch_size),
                                              num_workers=nw,
-                                             shuffle=not opt.rect,  # Shuffle=True unless rectangular training is used
+                                             shuffle=True,
                                              pin_memory=True,
                                              collate_fn=dataset.collate_fn)
 
@@ -342,19 +342,23 @@ def train(hyp):
             if gen_ir_data and gen_synth_data:
                 imgs_ir, targets_ir, paths_ir = next(gen_ir_data)
                 imgs_synth, targets_synth, paths_synth = next(gen_synth_data)
-                
-                mixed_batch_size = batch_size - supplement_batch_size
-                for si in reversed(range(mixed_batch_size)):
-                    targets_ir[targets_ir[:,0] == si, 0] = supplement_batch_size + si
-
-                imgs = torch.cat([imgs_synth, imgs_ir], dim=0)
-                targets = torch.cat([targets_synth, targets_ir],dim=0)
-                paths = paths_synth + paths_ir
 
                 if supplement_batch_size == 0:
                     imgs = imgs_ir
                     targets = targets_ir
                     paths = paths_ir
+                elif supplement_batch_size == 8:
+                    imgs = imgs_synth
+                    targets = targets_synth
+                    paths = paths_synth
+                else:
+                    mixed_batch_size = batch_size - supplement_batch_size
+                    for si in reversed(range(mixed_batch_size)):
+                        targets_ir[targets_ir[:,0] == si, 0] = supplement_batch_size + si
+
+                    imgs = torch.cat([imgs_synth, imgs_ir], dim=0)
+                    targets = torch.cat([targets_synth, targets_ir],dim=0)
+                    paths = paths_synth + paths_ir
 
             ni = i + nb * epoch  # number integrated batches (since train start)
             

@@ -42,15 +42,15 @@ combinations = list(itertools.product(domains, repeat=2))
 experiment_path = os.path.join(train_path, experiment + "/")
 datasets = []
 combinations = list(itertools.product(domains, domains))
-combinations = [("SW", "SW", 0), ("SW", "SW", 1)]
+combinations = [("NW", "SW", 0)]
 
 
 # iterate through domain combinations
 for src, dst, i in combinations:
   # iterate through trials
-  #for i in range(2):
+  #for i in range(4):
   
-    # case when trial vs rerun trial (after 4 runs)
+  # case when trial vs rerun trial (after 4 runs)
   if i <= 3:
     num = i
     experiment_out_path = os.path.join(out_path, experiment_name + "/")
