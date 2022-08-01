@@ -50,7 +50,7 @@ for src, dst in combinations:
   # iterate through trials
   for i in range(2):
   
-    # case when trial vs rerun trial (after 4 runs)
+    # case when real trial vs rerun trial (after 4 runs)
     if i <= 3:
       num = i
       experiment_out_path = os.path.join(out_path, experiment_name + "/")
