@@ -41,8 +41,6 @@ def make_data_file(out_root, img_list, lbl_list, version, img_list_val, lbl_list
             f.write('supplement_label=' + lbl_list_supplement + '\n')
         f.write('valid=' + img_list_val + '\n')
         f.write('valid_label=' + lbl_list_val + '\n')
-        # SWITCH
-        # f.write('names=/hdd/dataplus2021/whtest/repro_bass_300/yolov3/data/wnd.names\n')
         f.write('names=./data/wnd.names\n')
         
         f.write('backup=backup/\n')
@@ -73,7 +71,6 @@ def run_train(out_root, epochs, device, supplement_batch_size, baseline_boolean)
 
 
 def run_test(out_root, device):
-    print(f'CHECKING OUT ROOT BEFORE TEST.PY: {out_root}')
     subprocess.run(['python', 'test.py',                                                    # test gp_gan
                     '--cfg', './cfg/yolov3-spp.cfg',
                     '--data', out_root + 'train_data_' + version + '.data',
@@ -109,7 +106,6 @@ device = opt.device
 img_list_supplement = opt.img_list_supplement
 lbl_list_supplement = opt.lbl_list_supplement
 supplement_batch_size = opt.supplement_batch_size
-print(f"CHECKING EXPERIMENT = BASELINE: experiment -- {opt.experiment}")
 baseline_boolean = opt.experiment == "Baseline"
 
 def main(img_list, lbl_list, out_root, epochs, version, device, img_list_supplement, lbl_list_supplement, supplement_batch_size, baseline_boolean):
