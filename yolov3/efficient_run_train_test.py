@@ -5,14 +5,11 @@ import itertools
 import argparse
 import pwd
 
-repo_path = os.path.expanduser(f"~{pwd.getpwuid(os.geteuid())[0]}/") + 'repro_bass/'
-
 parser = argparse.ArgumentParser()
 
 parser.add_argument('--out_path', default='/scratch/cek28/jitter/wt/experiment_results/')
 parser.add_argument('--train_path', default='/scratch/cek28/jitter/wt/experiments/')
 parser.add_argument('--experiment')
-parser.add_argument('--experiment_name')
 parser.add_argument('--val_path', default='/scratch/cek28/jitter/wt/experiments/Test/')
 parser.add_argument('--epochs', default='300')
 parser.add_argument('--device')
@@ -24,39 +21,25 @@ out_path = args.out_path
 train_path = args.train_path
 val_path = args.val_path
 experiment = args.experiment
-experiment_name = args.experiment_name
 supplemental_batch_size =  args.supplemental_batch_size
+experiment_path = os.path.join(train_path, experiment + "/")
+
+datasets = []
 
 domains = ["EM", "NW", "SW"]
-trials = [0, 1, 2, 3]
+trials = [0, 1, 2, 3, 4]
+combinations = list(itertools.product(domains, domains, trials))
+combinations = [("NW", "SW", 0), ("SW", "SW", 0)]
 
-combinations = list(itertools.product(domains, repeat=2))
-
-#Adds filter as necessary
-
-#def optimalRatioFilter(element):
-#  return element[0] == "SW" and element[1] == "SW"
-
-#optimal_ratio_combos = list(filter(optimalRatioFilter, combinations))
-
-experiment_path = os.path.join(train_path, experiment + "/")
-datasets = []
-combinations = list(itertools.product(domains, domains))
-combinations = [("NW", "SW", 0)]
-
-
-# iterate through domain combinations
+# iterate through domain + trial combinations
 for src, dst, i in combinations:
-  # iterate through trials
-  #for i in range(2):
-  
   # first 5 trials are real trials vs rerun trial (after 5 runs)
   if i <= 5:
     num = i
-    experiment_out_path = os.path.join(out_path, experiment_name + "/")
+    experiment_out_path = os.path.join(out_path, experiment + "/")
   else:
     num = i - 5
-    experiment_out_path = os.path.join(out_path, "Reruns", experiment_name + "/",)
+    experiment_out_path = os.path.join(out_path, "Reruns", experiment + "/",)
 
   dataset_string = """Dataset(img_txt=experiment_path+'Train_{src}_Test_{dst}_Images.txt',
                     lbl_txt=experiment_path+'Train_{src}_Test_{dst}_Labels.txt',

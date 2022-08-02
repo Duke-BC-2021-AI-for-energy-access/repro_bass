@@ -21,7 +21,7 @@ parser.add_argument('--experiment', type=str, default='1', help='returns name of
 
 opt = parser.parse_args()
 
-def make_data_file(out_root, img_list, lbl_list, version, img_list_val, lbl_list_val, img_list_supplement, lbl_list_supplement, baseline_boolean):
+def make_data_file(out_root, img_list, lbl_list, version, img_list_val, lbl_list_val, img_list_supplement, lbl_list_supplement, supplement_batch_size, epochs):
     if not os.path.exists(out_root):                                                                    # make root dir
         os.makedirs(out_root)
 
@@ -34,19 +34,18 @@ def make_data_file(out_root, img_list, lbl_list, version, img_list_val, lbl_list
     with open(out_root + 'train_data_' + version + '.data', 'w') as f:                                     # create master label text file
         f.write('train=' + img_list + '\n')
         f.write('train_label=' + lbl_list + '\n')
-        f.write('classes=1\n')
-        if not baseline_boolean:
-            f.write('supplement=' + img_list_supplement + '\n')
-            f.write('supplement_label=' + lbl_list_supplement + '\n')
+        f.write('supplement=' + img_list_supplement + '\n')
+        f.write('supplement_label=' + lbl_list_supplement + '\n')
         f.write('valid=' + img_list_val + '\n')
         f.write('valid_label=' + lbl_list_val + '\n')
+        f.write('supplemental_batch_size=' + supplement_batch_size + '\n')
+        f.write('classes=1\n')
         f.write('names=./data/wnd.names\n')
-        
         f.write('backup=backup/\n')
         f.write('eval=wnd')
 
 
-def run_train(out_root, epochs, device, supplement_batch_size, baseline_boolean):
+def run_train(out_root, epochs, device, supplement_batch_size):
     subprocess.run(['python', 'train_mixed_batch.py',                                                    # train gp_gan
                     '--cfg', './cfg/yolov3-spp.cfg',
                     '--data', out_root + 'train_data_' + version + '.data',
@@ -93,14 +92,13 @@ device = opt.device
 img_list_supplement = opt.img_list_supplement
 lbl_list_supplement = opt.lbl_list_supplement
 supplement_batch_size = opt.supplement_batch_size
-baseline_boolean = opt.experiment == "Baseline"
 
-def main(img_list, lbl_list, out_root, epochs, version, device, img_list_supplement, lbl_list_supplement, supplement_batch_size, baseline_boolean):
-    make_data_file(out_root, img_list, lbl_list, version, img_list_val, lbl_list_val, img_list_supplement, lbl_list_supplement, baseline_boolean)
+def main(img_list, lbl_list, out_root, epochs, version, device, img_list_supplement, lbl_list_supplement, supplement_batch_size):
+    make_data_file(out_root, img_list, lbl_list, version, img_list_val, lbl_list_val, img_list_supplement, lbl_list_supplement, supplement_batch_size, epochs)
     print("Made .data file\n")
 
     #Change back
-    run_train(out_root, epochs, device, supplement_batch_size, baseline_boolean)
+    run_train(out_root, epochs, device, supplement_batch_size)
     print("Finished Training\n")
 
     run_test(out_root, device)
@@ -110,4 +108,4 @@ def main(img_list, lbl_list, out_root, epochs, version, device, img_list_supplem
     print("Copied outputs\n")
 
 
-main(img_list, lbl_list, out_root, epochs, version, device, img_list_supplement, lbl_list_supplement, supplement_batch_size, baseline_boolean)
+main(img_list, lbl_list, out_root, epochs, version, device, img_list_supplement, lbl_list_supplement, supplement_batch_size)
