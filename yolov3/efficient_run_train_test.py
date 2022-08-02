@@ -29,7 +29,7 @@ datasets = []
 domains = ["EM", "NW", "SW"]
 trials = [0]
 combinations = list(itertools.product(domains, domains, trials))
-combinations = [("NW", "SW", 0), ("SW", "SW", 0)]
+combinations = [("NW", "SW", 0)]
 
 # iterate through domain + trial combinations
 for src, dst, i in combinations:
