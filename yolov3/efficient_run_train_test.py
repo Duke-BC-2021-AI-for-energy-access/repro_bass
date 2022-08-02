@@ -50,30 +50,22 @@ for src, dst, i in combinations:
   # iterate through trials
   #for i in range(2):
   
-  # case when real trial vs rerun trial (after 4 runs)
-  if i <= 3:
+  # first 5 trials are real trials vs rerun trial (after 5 runs)
+  if i <= 5:
     num = i
     experiment_out_path = os.path.join(out_path, experiment_name + "/")
   else:
-    num = i - 4
+    num = i - 5
     experiment_out_path = os.path.join(out_path, "Reruns", experiment_name + "/",)
 
-  if not experiment == "Baseline":
-    dataset_string = """Dataset(img_txt=experiment_path+'Train_{src}_Test_{dst}_Images.txt',
-                      lbl_txt=experiment_path+'Train_{src}_Test_{dst}_Labels.txt',
-                      out_dir=experiment_out_path+'t_{src}_v_{dst}_{num}/',
-                      img_txt_val=val_path+'{dst}_Images.txt',
-                      lbl_txt_val=val_path+'{dst}_Labels.txt',
-                      img_txt_supplement=experiment_path+'Train_{src}_Test_{dst}_Supplement_Images.txt',
-                      lbl_txt_supplement=experiment_path+'Train_{src}_Test_{dst}_Supplement_Labels.txt')""".format(src=src,dst=dst,num=num)
-  else:
-    dataset_string = """Dataset(img_txt=experiment_path+'Train_{src}_Test_{dst}_Images.txt',
-                lbl_txt=experiment_path+'Train_{src}_Test_{dst}_Labels.txt',
-                out_dir=experiment_out_path+'t_{src}_v_{dst}_{num}/',
-                img_txt_val=val_path+'{dst}_Images.txt',
-                lbl_txt_val=val_path+'{dst}_Labels.txt',
-                img_txt_supplement='',
-                lbl_txt_supplement='')""".format(src=src,dst=dst,num=num)
+  dataset_string = """Dataset(img_txt=experiment_path+'Train_{src}_Test_{dst}_Images.txt',
+                    lbl_txt=experiment_path+'Train_{src}_Test_{dst}_Labels.txt',
+                    out_dir=experiment_out_path+'t_{src}_v_{dst}_{num}/',
+                    img_txt_val=val_path+'{dst}_Images.txt',
+                    lbl_txt_val=val_path+'{dst}_Labels.txt',
+                    img_txt_supplement=experiment_path+'Train_{src}_Test_{dst}_Supplement_Images.txt',
+                    lbl_txt_supplement=experiment_path+'Train_{src}_Test_{dst}_Supplement_Labels.txt')""".format(src=src,dst=dst,num=num)
+
   datasets.append(eval(dataset_string))
 
 for trial in datasets:

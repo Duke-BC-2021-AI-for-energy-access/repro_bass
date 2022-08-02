@@ -4,7 +4,6 @@ import subprocess
 from glob import glob
 import shutil 
 
-# python run_save_train_test.py --img_list /hdd/dataplus2021/fcw/wnd_train_img_gen_ratio2.txt --lbl_list /hdd/dataplus2021/fcw/wnd_train_lbl_gen_ratio2.txt --out_dir /hdd/dataplus2021/share/exper_v0ratio2/
 parser = argparse.ArgumentParser()
 parser.add_argument('--img_list', type=str, default='none', help='directory of train imgs')                                             # if yes, input absolute path
 parser.add_argument('--lbl_list', type=str, default='none', help='directory of train labels')                                           # if yes, input absolute path
@@ -48,26 +47,14 @@ def make_data_file(out_root, img_list, lbl_list, version, img_list_val, lbl_list
 
 
 def run_train(out_root, epochs, device, supplement_batch_size, baseline_boolean):
-    print(f"BASELINE BOOLEAN: {baseline_boolean}")
-    if baseline_boolean:
-        subprocess.run(['python', 'train.py',                                                    # train gp_gan
-                        '--cfg', './cfg/yolov3-spp.cfg',
-                        '--data', out_root + 'train_data_' + version + '.data',
-                        '--img-size', '608',
-                        '--epochs', epochs,
-                        '--batch-size', '8',
-                        '--device', device,
-                        '--out_root', out_root])
-    else:
-        subprocess.run(['python', 'train_mixed_batch.py',                                                    # train gp_gan
-                        '--cfg', './cfg/yolov3-spp.cfg',
-                        '--data', out_root + 'train_data_' + version + '.data',
-                        '--img-size', '608',
-                        '--epochs', epochs,
-                        '--batch-size', '8',
-                        '--supplement-batch-size', supplement_batch_size,
-                        '--device', device])
-        
+    subprocess.run(['python', 'train_mixed_batch.py',                                                    # train gp_gan
+                    '--cfg', './cfg/yolov3-spp.cfg',
+                    '--data', out_root + 'train_data_' + version + '.data',
+                    '--img-size', '608',
+                    '--epochs', epochs,
+                    '--batch-size', '8',
+                    '--supplement-batch-size', supplement_batch_size,
+                    '--device', device])
 
 
 def run_test(out_root, device):
@@ -84,14 +71,14 @@ def copy_outputs(out_root, version):
         os.makedirs(out_root + version + '_outputs/')
 
     # only copy files we want for mixed batch training
-    #file_names = ['PR_curve.png', 'precision.txt', 'recall.txt', 'results.png', 'results.txt', 'test_batch0_gt.jpg', 'test_batch0_pred.jpg', 'train_batch0.jpg', 'test_results.txt', 'ious.txt']
-    file_names = ['PR_curve.png', 'precision.txt', 'recall.txt', 'results.png', 'test_batch0_gt.jpg', 'test_batch0_pred.jpg', 'test_results.txt', 'ious.txt']
-    #file_names.extend((out_root + 'weights/best.pt', out_root + 'weights/last.pt'))
-    for file in file_names:
-        # SWITCH
-        # shutil.copy2('/hdd/dataplus2021/whtest/repro_bass_300/yolov3/' + file, out_root + version + '_outputs/')
 
-        #COPY FILE I CREATE
+    #all file options:
+    #file_names = ['PR_curve.png', 'precision.txt', 'recall.txt', 'results.png', 'results.txt', 'test_batch0_gt.jpg', 'test_batch0_pred.jpg', 'train_batch0.jpg', 'test_results.txt', 'ious.txt']
+    
+    #actually used:
+    file_names = ['PR_curve.png', 'precision.txt', 'recall.txt', 'results.png', 'test_batch0_gt.jpg', 'test_batch0_pred.jpg', 'test_results.txt', 'ious.txt']
+    
+    for file in file_names:
         shutil.copy2('./' + file, out_root + version + '_outputs/')
 
 
