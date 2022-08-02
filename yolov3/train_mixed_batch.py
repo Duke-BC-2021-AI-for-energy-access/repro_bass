@@ -415,7 +415,7 @@ def train(hyp):
 
             # Plotting taken out of mixed batch training
             #if ni < 5:
-            #    fname = 'train_mixedbatch%g.jpg' % i
+            #    fname = wdir + 'train_mixedbatch%g.jpg' % i
             #    plot_images(images=imgs, targets=targets, paths=paths, fname=fname)
             #    if tb_writer:
             #        tb_writer.add_image(fname, cv2.imread(fname)[:, :, ::-1], dataformats='HWC', global_step=epoch)

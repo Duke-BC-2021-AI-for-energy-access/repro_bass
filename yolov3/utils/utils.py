@@ -153,7 +153,7 @@ def clip_coords(boxes, img_shape):
     boxes[:, 3].clamp_(0, img_shape[0])  # y2
 
 
-def ap_per_class(tp, conf, pred_cls, target_cls):
+def ap_per_class(tp, conf, pred_cls, target_cls, root=None):
     """ Compute the average precision, given the recall and precision curves.
     Source: https://github.com/rafaelpadilla/Object-Detection-Metrics.
     # Arguments
@@ -164,6 +164,9 @@ def ap_per_class(tp, conf, pred_cls, target_cls):
     # Returns
         The average precision as computed in py-faster-rcnn.
     """
+
+    if not root:
+        return None
 
     # Sort by objectness
     i = np.argsort(-conf)
@@ -200,10 +203,10 @@ def ap_per_class(tp, conf, pred_cls, target_cls):
             for j in range(tp.shape[1]):
                 ap[ci, j] = compute_ap(recall[:, j], precision[:, j])
 
-            with open('precision.txt', 'w') as filehandle:
+            with open(root + 'precision.txt', 'w') as filehandle:
                 filehandle.writelines("%s\n" % precision_value for precision_value in precision)
 
-            with open('recall.txt', 'w') as filehandle:
+            with open(root + 'recall.txt', 'w') as filehandle:
                 filehandle.writelines("%s\n" % recall_value for recall_value in recall)
 
             # Plot
@@ -214,7 +217,7 @@ def ap_per_class(tp, conf, pred_cls, target_cls):
             ax.set_xlim(0, 1.01)
             ax.set_ylim(0, 1.01)
             fig.tight_layout()
-            fig.savefig('PR_curve.png', dpi=300)
+            fig.savefig(root + 'PR_curve.png', dpi=300)
             plt.close(fig)
 
     # Compute F1 score (harmonic mean of precision and recall)

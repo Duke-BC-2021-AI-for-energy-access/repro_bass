@@ -365,11 +365,8 @@ class LoadImagesAndLabels(Dataset):  # for training/testing
                 self.labels = x
                 labels_loaded = True
         else:
-            print('HERE')
-            print(path)
             s = path.replace('Images', 'Labels')
             s = s.replace('images', 'labels')
-            print(s)
         pbar = tqdm(self.label_files)
         for i, file in enumerate(pbar):
             if labels_loaded:
