@@ -131,7 +131,7 @@ def train(hyp):
     #loop_count = int(image_number) // batch_size
 
     # Remove previous results
-    for f in glob.glob('*_batch*.jpg') + glob.glob(results_file):
+    for f in glob.glob(wdir + '/*_batch*.jpg') + glob.glob('/*_batch*.jpg') + glob.glob(results_file):
         os.remove(f)
 
     # Initialize model
@@ -282,13 +282,6 @@ def train(hyp):
                                              pin_memory=True,
                                              collate_fn=dataset.collate_fn)
 
-
-    #print("LENGTHS")
-    #print(len(dataset))
-    #print(len(synth_dataset))
-    #print(len(dataloader))
-    #print(len(synth_dataloader))
-
     # Model parameters
     model.nc = nc  # attach number of classes to model
     model.hyp = hyp  # attach hyperparameters to model
@@ -420,13 +413,13 @@ def train(hyp):
             s = ('%10s' * 2 + '%10.3g' * 6) % ('%g/%g' % (epoch, epochs - 1), mem, *mloss, len(targets), img_size)
             pbar.set_description(s)
 
-            # Plot
-            if ni < 5:
-                fname = 'train_mixedbatch%g.jpg' % i
-                plot_images(images=imgs, targets=targets, paths=paths, fname=fname)
-                if tb_writer:
-                    tb_writer.add_image(fname, cv2.imread(fname)[:, :, ::-1], dataformats='HWC', global_step=epoch)
-                    # tb_writer.add_graph(model, imgs)  # add model to tensorboard
+            # Plotting taken out of mixed batch training
+            #if ni < 5:
+            #    fname = 'train_mixedbatch%g.jpg' % i
+            #    plot_images(images=imgs, targets=targets, paths=paths, fname=fname)
+            #    if tb_writer:
+            #        tb_writer.add_image(fname, cv2.imread(fname)[:, :, ::-1], dataformats='HWC', global_step=epoch)
+            #       #tb_writer.add_graph(model, imgs)  # add model to tensorboard
 
             # end batch ------------------------------------------------------------------------------------------------
 
@@ -500,7 +493,7 @@ def train(hyp):
                 os.system('gsutil cp %s gs://%s/weights' % (f2, opt.bucket)) if opt.bucket and ispt else None  # upload
 
     if not opt.evolve:
-        plot_results()  # save as results.png
+        plot_results(root=wdir)  # save as results.png
     print('%g epochs completed in %.3f hours.\n' % (epoch - start_epoch + 1, (time.time() - t0) / 3600))
     dist.destroy_process_group() if torch.cuda.device_count() > 1 else None
     torch.cuda.empty_cache()
