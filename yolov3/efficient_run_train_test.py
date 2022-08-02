@@ -52,8 +52,6 @@ for src, dst, i in combinations:
   datasets.append(eval(dataset_string))
 
 for trial in datasets:
-  print(trial.get_img_txt_val())
-  print(trial.get_lbl_txt_val())
   subprocess.run(['python', 'run_save_train_test.py',
                     '--img_list', trial.get_img_txt(), 
                     '--lbl_list', trial.get_lbl_txt(),

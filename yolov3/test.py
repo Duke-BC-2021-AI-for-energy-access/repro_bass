@@ -26,10 +26,8 @@ def test(cfg,
          dataroot=None,
          experiment_final=None):
 
-    print(f'WEIGHTS: {weights}')
     if weights is not None:
         dataroot = weights[:weights.rfind('/')] # opt.data should be in the form of .../.../.../....data. We only use its parent folder here.
-    print(f'Dataroot: {dataroot}')
     # Initialize/load model and set device
     if model is None:
         is_training = False
@@ -247,7 +245,6 @@ def test(cfg,
             print('WARNING: pycocotools must be installed with numpy==1.17 to run correctly. '
                   'See https://github.com/cocodataset/cocoapi/issues/356')
 
-    print(f'Line 245: {dataroot}')
     results_file = dataroot + os.sep + 'test_results.txt'
     # Remove previous results
     try:
