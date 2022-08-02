@@ -62,7 +62,8 @@ def run_test(out_root, device):
                     '--data', out_root + 'train_data_' + version + '.data',
                     '--img-size', '608',
                     '--weights', out_root + 'weights/last.pt', # DONE
-                    '--device', device])
+                    '--device', device,
+                    '--experiment_final', experiment + '_300'])
 
 
 def copy_outputs(out_root, version):
@@ -88,6 +89,7 @@ device = opt.device
 img_list_supplement = opt.img_list_supplement
 lbl_list_supplement = opt.lbl_list_supplement
 supplement_batch_size = opt.supplement_batch_size
+experiment = opt.experiment
 
 def main(img_list, lbl_list, out_root, epochs, version, device, img_list_supplement, lbl_list_supplement, supplement_batch_size):
     make_data_file(out_root, img_list, lbl_list, version, img_list_val, lbl_list_val, img_list_supplement, lbl_list_supplement, supplement_batch_size, epochs)

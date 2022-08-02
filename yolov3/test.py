@@ -23,7 +23,8 @@ def test(cfg,
          model=None,
          dataloader=None,
          multi_label=True,
-         dataroot=None):
+         dataroot=None,
+         experiment_final=None):
 
     print(f'WEIGHTS: {weights}')
     if weights is not None:
@@ -36,7 +37,7 @@ def test(cfg,
         verbose = opt.task == 'test'
 
         # Remove previous
-        for f in glob.glob('test_batch*.jpg'):
+        for f in glob.glob(dataroot + os.sep + 'test_batch*.jpg'):
             os.remove(f)
 
         # Initialize model
@@ -90,7 +91,7 @@ def test(cfg,
     jdict, stats, ap, ap_class = [], [], [], []
 
     try:
-        f = open('ious.txt', 'r+')
+        f = open(dataroot + os.sep + 'ious.txt', 'r+')
         f.truncate(0)
     except:
         pass
@@ -170,7 +171,7 @@ def test(cfg,
                         ious, i = box_iou(pred[pi, :4], tbox[ti]).max(1)  # best ious, indices
                         
                         # Write
-                        with open('ious.txt', 'a') as f:
+                        with open(dataroot + os.sep + 'ious.txt', 'a') as f:
                             f.write(str(ious.cpu().numpy()) + '\n')  
 
                         # Append detections
@@ -187,9 +188,13 @@ def test(cfg,
 
         # Plot images
         if batch_i < 1:
-            f = 'test_batch%g_gt.jpg' % batch_i  # filename
+            f = dataroot + os.sep + 'test_batch%g_gt.jpg' % batch_i  # filename
+            if experiment_final:
+                f = dataroot + os.sep + experiment_final + '_test_batch%g_gt.jpg' % batch_i  # filename
             plot_images(imgs, targets, paths=paths, names=names, fname=f)  # ground truth
-            f = 'test_batch%g_pred.jpg' % batch_i
+            f = dataroot + os.sep + 'test_batch%g_pred.jpg' % batch_i
+            if experiment_final:
+                f = dataroot + os.sep + experiment_final + '_test_batch%g_pred.jpg' % batch_i
             plot_images(imgs, output_to_target(output, width, height), paths=paths, names=names, fname=f)  # predictions
 
     # Compute statistics
@@ -279,10 +284,12 @@ if __name__ == '__main__':
     parser.add_argument('--device', default='', help='device id (i.e. 0 or 0,1) or cpu')
     parser.add_argument('--single-cls', action='store_true', help='train as single-class dataset')
     parser.add_argument('--augment', action='store_true', help='augmented inference')
+    parser.add_argument('--experiment_final', default='NA', help='final testing round for saving figures')
     opt = parser.parse_args()
     opt.save_json = opt.save_json or any([x in opt.data for x in ['coco.data', 'coco2014.data', 'coco2017.data']])
     opt.cfg = check_file(opt.cfg)  # check file
     opt.data = check_file(opt.data)  # check file
+    opt.experiment_final = opt.experiment_final if opt.experiment_final != 'NA' else None
     print(opt)
 
     # task = 'test', 'study', 'benchmark'
@@ -296,7 +303,8 @@ if __name__ == '__main__':
              opt.iou_thres,
              opt.save_json,
              opt.single_cls,
-             opt.augment)
+             opt.augment,
+             experiment_final = opt.experiment_final)
 
     elif opt.task == 'benchmark':  # mAPs at 256-640 at conf 0.5 and 0.7
         y = []

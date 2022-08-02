@@ -27,7 +27,7 @@ experiment_path = os.path.join(train_path, experiment + "/")
 datasets = []
 
 domains = ["EM", "NW", "SW"]
-trials = [0, 1, 2, 3, 4]
+trials = [0]
 combinations = list(itertools.product(domains, domains, trials))
 combinations = [("NW", "SW", 0), ("SW", "SW", 0)]
 
