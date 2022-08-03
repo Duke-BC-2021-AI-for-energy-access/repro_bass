@@ -27,14 +27,13 @@ experiment_path = os.path.join(train_path, experiment + "/")
 datasets = []
 
 domains = ["EM", "NW", "SW"]
-trials = [0]
+trials = [0, 1, 2, 3, 4]
 combinations = list(itertools.product(domains, domains, trials))
-combinations = [("NW", "SW", 0)]
 
 # iterate through domain + trial combinations
 for src, dst, i in combinations:
   # first 5 trials are real trials vs rerun trial (after 5 runs)
-  if i <= 5:
+  if i < 4:
     num = i
     experiment_out_path = os.path.join(out_path, experiment + "/")
   else:
