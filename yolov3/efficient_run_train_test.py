@@ -33,7 +33,7 @@ combinations = list(itertools.product(domains, domains, trials))
 # iterate through domain + trial combinations
 for src, dst, i in combinations:
   # first 5 trials are real trials vs rerun trial (after 5 runs)
-  if i < 4:
+  if i <= 4:
     num = i
     experiment_out_path = os.path.join(out_path, experiment + "/")
   else:
