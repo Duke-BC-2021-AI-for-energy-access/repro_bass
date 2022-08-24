@@ -65,19 +65,6 @@ def run_test(out_root, device):
                     '--device', device,
                     '--experiment_final', experiment + '_300'])
 
-
-def copy_outputs(out_root, version):
-    if not os.path.exists(out_root + version + '_outputs/'):                                                                    # make root dir
-        os.makedirs(out_root + version + '_outputs/')
-
-    # only copy files we want for mixed batch training
-    #all file options:
-    file_names = ['PR_curve.png', 'precision.txt', 'recall.txt', 'results.png', 'results.txt', 'test_batch0_gt.jpg', 'test_batch0_pred.jpg', 'train_batch0.jpg', 'test_results.txt', 'ious.txt']
-    
-    for file in file_names:
-        shutil.copy2('./' + file, out_root + version + '_outputs/')
-
-
 img_list = opt.img_list
 lbl_list = opt.lbl_list
 epochs = opt.epochs
@@ -101,11 +88,5 @@ def main(img_list, lbl_list, out_root, epochs, version, device, img_list_supplem
 
     run_test(out_root, device)
     print("Finished Testing\n")
-
-    # Due to multiple GPUs occupying the same yolov3 folder, there is the potential for these files to be overwritten,
-    # thus no copying is included in mixed batch training
-    #copy_outputs(out_root, version)
-    #print("Copied outputs\n")
-
 
 main(img_list, lbl_list, out_root, epochs, version, device, img_list_supplement, lbl_list_supplement, supplement_batch_size)
