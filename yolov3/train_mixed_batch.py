@@ -87,8 +87,6 @@ def train(hyp):
     data = opt.data
     batch_size = int(opt.batch_size)
 
-    batch_size = 8
-
     epochs = opt.epochs  # 500200 batches at bs 64, 117263 images = 273 epochs
     accumulate = max(round(64 / batch_size), 1)  # accumulate n times before optimizer update (bs 64)
     weights = opt.weights  # initial training weights
