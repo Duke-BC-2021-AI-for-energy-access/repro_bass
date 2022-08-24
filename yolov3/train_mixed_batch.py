@@ -282,6 +282,10 @@ def train(hyp):
                                              pin_memory=True,
                                              collate_fn=dataset.collate_fn)
 
+    ###added for mb####
+    gen_ir_data = infi_loop(dataloader)
+    gen_synth_data = infi_loop(synth_dataloader)
+
     # Model parameters
     model.nc = nc  # attach number of classes to model
     model.hyp = hyp  # attach hyperparameters to model
@@ -320,13 +324,6 @@ def train(hyp):
         mloss = torch.zeros(4).to(device)  # mean losses
         print(('\n' + '%10s' * 8) % ('Epoch', 'gpu_mem', 'GIoU', 'obj', 'cls', 'total', 'targets', 'img_size'))
         
-        ###added for mb####
-        if dataloader:
-            gen_ir_data = infi_loop(dataloader)
-        if synth_dataloader:
-            gen_synth_data = infi_loop(synth_dataloader)
-        
-        
         #pbar = tqdm(enumerate(dataloader), total=nb)  # progress bar
         pbar = tqdm(range(0, nb), total=nb)
 
@@ -345,9 +342,12 @@ def train(hyp):
                     targets = targets_synth
                     paths = paths_synth
                 else:
-                    mixed_batch_size = batch_size - supplement_batch_size
-                    for si in reversed(range(mixed_batch_size)):
-                        targets_ir[targets_ir[:,0] == si, 0] = supplement_batch_size + si
+                    targets_ir[:,0] += len(imgs_synth)
+
+                    #previous trouble code (case when dataloader loads incomplete batch / last batch)
+                    #mixed_batch_size = batch_size - supplement_batch_size
+                    #for si in reversed(range(mixed_batch_size)):
+                    #    targets_ir[targets_ir[:,0] == si, 0] = supplement_batch_size + si
 
                     imgs = torch.cat([imgs_synth, imgs_ir], dim=0)
                     targets = torch.cat([targets_synth, targets_ir],dim=0)
