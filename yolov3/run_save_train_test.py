@@ -61,9 +61,9 @@ def run_test(out_root, device):
                     '--cfg', './cfg/yolov3-spp.cfg',
                     '--data', out_root + 'train_data_' + version + '.data',
                     '--img-size', '608',
-                    '--weights', out_root + 'weights/last.pt', # DONE
+                    '--weights', out_root + 'weights/best.pt', # DONE
                     '--device', device,
-                    '--experiment_final', experiment + '_300'])
+                    '--experiment_final', experiment])
 
 img_list = opt.img_list
 lbl_list = opt.lbl_list
