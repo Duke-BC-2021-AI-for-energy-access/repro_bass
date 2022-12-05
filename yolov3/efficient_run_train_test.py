@@ -30,6 +30,8 @@ domains = ["EM", "NW", "SW"]
 trials = [0, 1, 2, 3, 4]
 combinations = list(itertools.product(domains, domains, trials))
 
+combinations = [("EM", "SW", 5)]
+
 # iterate through domain + trial combinations
 for src, dst, i in combinations:
   # first 5 trials are real trials vs rerun trial (after 5 runs)
